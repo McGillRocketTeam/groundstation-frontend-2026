@@ -4,6 +4,6 @@ import "./index.css";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <div className="hello">Hello World</div>
+    <div>Hello World</div>
   </StrictMode>,
 );
