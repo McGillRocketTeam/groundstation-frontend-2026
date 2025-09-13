@@ -1,1 +1,87 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+html:is(.dark) {
+	color-scheme: dark;
+}
+
+/* Tailwind Configuration 
+ * https://tailwindcss.com/docs/theme
+ */
+@theme inline {
+	--default-font-family: "JetBrains Mono", monospace;
+	--default-mono-font-family: "JetBrains Mono", monospace;
+
+
+	--color-mrt-red: var(--mrt-red);
+	--color-background: var(--background);
+	--color-primary: var(--primary);
+
+	--color-border: var(--border);
+
+	--color-neutral: var(--neutral);
+	--color-neutral-background: var(--neutral-background);
+	--color-success: var(--success);
+	--color-success-background: var(--success-background);
+	--color-warning: var(--warning);
+	--color-warning-background: var(--warning-background);
+	--color-error: var(--error);
+	--color-error-background: var(--error-background);
+}
+
+
+/* Our custom colors, referenced by Tailwind */
+:root {
+	--mrt-red: #9F1D22;
+	--background: var(--color-neutral-50);
+	--primary: var(--color-neutral-800);
+
+	--border: var(--color-neutral-300);
+
+	--neutral: var(--color-neutral-700);
+	--neutral-background: var(--color-neutral-100);
+	--success: var(--color-emerald-700);
+	--success-background: var(--color-emerald-50);
+	--warning: var(--color-yellow-700);
+	--warning-background: var(--color-yellow-50);
+	--error: var(--color-red-700);
+	--error-background: var(--color-red-50);
+}
+
+.dark {
+	--mrt-red: #D21E26;
+	--background: var(--color-neutral-950);
+	--primary: var(--color-neutral-200);
+
+	--border: var(--color-neutral-700);
+
+	--neutral: var(--color-neutral-200);
+	--neutral-background: var(--color-neutral-950);
+	--success: var(--color-emerald-200);
+	--success-background: var(--color-emerald-950);
+	--warning: var(--color-yellow-200);
+	--warning-background: var(--color-yellow-950);
+	--error: var(--color-red-200);
+	--error-background: var(--color-red-950);
+}
+
+@layer base {
+	* {
+		@apply border-border outline-border/50;
+
+		/* Enable zero with a slash */
+		font-feature-settings: "zero" 1;
+		-webkit-font-feature-settings: "zero";
+		-moz-font-feature-settings: "zero";
+	}
+
+	body {
+		@apply bg-background text-primary;
+	}
+
+	button:not([disabled]),
+	[role="button"]:not([disabled]) {
+		cursor: pointer;
+	}
+}
