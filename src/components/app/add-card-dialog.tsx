@@ -10,6 +10,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type React from "react";
+import { ScrollArea } from "../ui/scroll-area";
+import { AddCardForm } from "./add-card-form";
 
 type TriggerType = NonNullable<
   React.ComponentProps<typeof DialogTrigger>["render"]
@@ -26,7 +28,11 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
             Configure your card for dashboard.
           </DialogDescription>
         </DialogHeader>
-        <div>Placeholder Content</div>
+
+        <ScrollArea className="h-full max-h-[calc(100vh-15rem)]">
+          <AddCardForm />
+        </ScrollArea>
+
         <DialogFooter>
           <DialogClose render={<Button variant="outline">Cancel</Button>} />
           <DialogClose render={<Button>Add</Button>} />
