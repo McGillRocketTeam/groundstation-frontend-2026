@@ -1,3 +1,4 @@
+import { AddCardDialog } from "@/components/app/add-card-dialog";
 import { TextCard } from "@/components/cards/text";
 import { Button } from "@/components/ui/button";
 import {
@@ -27,9 +28,9 @@ export function DashboardPage() {
       {/* so the user is not stuck on an empty dashboard */}
       {dockviewApi?.totalPanels === 0 && (
         <div className="crossed absolute inset-0 grid h-full w-full place-items-center">
-          <div>
-            <Button variant="outline">ADD CARD</Button>
-          </div>
+          <AddCardDialog
+            trigger={<Button variant="outline">ADD CARD</Button>}
+          />
         </div>
       )}
 
