@@ -1,4 +1,5 @@
-import { TextCard } from "@/cards/text/text-card";
+import { TextCard } from "@/components/cards/text";
+import { Button } from "@/components/ui/button";
 import {
   DockviewApi,
   DockviewReact,
@@ -26,9 +27,12 @@ export function DashboardPage() {
       {/* so the user is not stuck on an empty dashboard */}
       {dockviewApi?.totalPanels === 0 && (
         <div className="crossed absolute inset-0 grid h-full w-full place-items-center">
-          <div className="bg-background border p-2">EMPTY DASHBOARD</div>
+          <div>
+            <Button variant="outline">ADD CARD</Button>
+          </div>
         </div>
       )}
+
       <DockviewReact onReady={onReady} components={components} />
     </div>
   );
