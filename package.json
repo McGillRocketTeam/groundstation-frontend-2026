@@ -13,6 +13,7 @@
   "dependencies": {
     "@base-ui-components/react": "1.0.0-beta.3",
     "@effect-atom/atom-react": "^0.1.17",
+    "@effect/platform": "^0.90.9",
     "@effect/platform-browser": "^0.70.0",
     "@radix-ui/react-icons": "^1.3.2",
     "@tailwindcss/vite": "^4.1.13",
