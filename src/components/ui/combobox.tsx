@@ -1,129 +1,134 @@
-import * as React from 'react';
-import { Combobox as ComboboxPrimitive } from '@base-ui-components/react/combobox';
+import { cn } from "@/lib/utils/ui";
+import { Combobox as ComboboxPrimitive } from "@base-ui-components/react/combobox";
+import { CheckIcon, ChevronDownIcon, Cross1Icon } from "@radix-ui/react-icons";
+import * as React from "react";
 
+function Combobox({
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.Root>) {
+  return <ComboboxPrimitive.Root {...props} />;
+}
 
-
-export default function ExampleCombobox() {
-  const id = React.useId();
+function ComboboxInput({
+  className,
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.Input>) {
   return (
-    <ComboboxPrimitive.Root items={fruits}>
-      <div className="relative flex flex-col gap-1 text-sm leading-5 font-medium text-gray-900">
-        <label htmlFor={id}>Choose a fruit</label>
-        <ComboboxPrimitive.Input
-          placeholder="e.g. Apple"
-          id={id}
-          className="h-10 w-64 rounded-md font-normal border border-gray-200 pl-3.5 text-base text-gray-900 bg-[canvas] focus:outline focus:outline-2 focus:-outline-offset-1 focus:outline-blue-800"
-        />
-        <div className="absolute right-2 bottom-0 flex h-10 items-center justify-center text-gray-600">
-          <ComboboxPrimitive.Clear
-            className="flex h-10 w-6 items-center justify-center rounded bg-transparent p-0"
-            aria-label="Clear selection"
-          >
-            <ClearIcon className="size-4" />
-          </ComboboxPrimitive.Clear>
-          <ComboboxPrimitive.Trigger
-            className="flex h-10 w-6 items-center justify-center rounded bg-transparent p-0"
-            aria-label="Open popup"
-          >
-            <ChevronDownIcon className="size-4" />
-          </ComboboxPrimitive.Trigger>
-        </div>
+    <div className="relative flex flex-col gap-1 text-sm">
+      <ComboboxPrimitive.Input
+        className={cn(
+          "selection:bg-primary selection:text-primary-foreground border-input flex h-9 w-full min-w-0 border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+          "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+          className,
+        )}
+        {...props}
+      />
+
+      <div className="text-muted absolute right-2 bottom-0 flex h-10 items-center justify-center">
+        <ComboboxPrimitive.Clear
+          className="flex h-10 w-6 items-center justify-center p-0"
+          aria-label="Clear selection"
+        >
+          <Cross1Icon className="size-4 translate-y-0.5" />
+        </ComboboxPrimitive.Clear>
+        <ComboboxPrimitive.Trigger
+          className="flex h-10 w-6 items-center justify-center p-0"
+          aria-label="Open popup"
+        >
+          <ChevronDownIcon className="size-4 translate-y-0.5" />
+        </ComboboxPrimitive.Trigger>
       </div>
-
-      <ComboboxPrimitive.Portal>
-        <ComboboxPrimitive.Positioner className="outline-none" sideOffset={4}>
-          <ComboboxPrimitive.Popup className="w-[var(--anchor-width)] max-h-[min(var(--available-height),23rem)] max-w-[var(--available-width)] origin-[var(--transform-origin)] overflow-y-auto scroll-pt-2 scroll-pb-2 overscroll-contain rounded-md bg-[canvas] py-2 text-gray-900 shadow-lg shadow-gray-200 outline-1 outline-gray-200 transition-[transform,scale,opacity] data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[side=none]:data-[ending-style]:transition-none data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[side=none]:data-[starting-style]:scale-100 data-[side=none]:data-[starting-style]:opacity-100 data-[side=none]:data-[starting-style]:transition-none dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300">
-            <ComboboxPrimitive.Empty className="px-4 py-2 text-[0.925rem] leading-4 text-gray-600 empty:m-0 empty:p-0">
-              No fruits found.
-            </ComboboxPrimitive.Empty>
-            <ComboboxPrimitive.List>
-              {(item: string) => (
-                <ComboboxPrimitive.Item
-                  key={item}
-                  value={item}
-                  className="grid cursor-default grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-4 text-base leading-4 outline-none select-none data-[highlighted]:relative data-[highlighted]:z-0 data-[highlighted]:text-gray-50 data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-2 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:z-[-1] data-[highlighted]:before:rounded-sm data-[highlighted]:before:bg-gray-900"
-                >
-                  <ComboboxPrimitive.ItemIndicator className="col-start-1">
-                    <CheckIcon className="size-3" />
-                  </ComboboxPrimitive.ItemIndicator>
-                  <div className="col-start-2">{item}</div>
-                </ComboboxPrimitive.Item>
-              )}
-            </ComboboxPrimitive.List>
-          </ComboboxPrimitive.Popup>
-        </ComboboxPrimitive.Positioner>
-      </ComboboxPrimitive.Portal>
-    </ComboboxPrimitive.Root>
+    </div>
   );
 }
 
-function CheckIcon(props: React.ComponentProps<'svg'>) {
+function ComboboxPortal({
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.Portal>) {
+  return <ComboboxPrimitive.Portal {...props} />;
+}
+
+function ComboboxPositioner({
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.Positioner>) {
+  return <ComboboxPrimitive.Positioner {...props} />;
+}
+
+function ComboboxEmpty({
+  className,
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.Empty>) {
   return (
-    <svg fill="currentcolor" width="10" height="10" viewBox="0 0 10 10" {...props}>
-      <path d="M9.1603 1.12218C9.50684 1.34873 9.60427 1.81354 9.37792 2.16038L5.13603 8.66012C5.01614 8.8438 4.82192 8.96576 4.60451 8.99384C4.3871 9.02194 4.1683 8.95335 4.00574 8.80615L1.24664 6.30769C0.939709 6.02975 0.916013 5.55541 1.19372 5.24822C1.47142 4.94102 1.94536 4.91731 2.2523 5.19524L4.36085 7.10461L8.12299 1.33999C8.34934 0.993152 8.81376 0.895638 9.1603 1.12218Z" />
-    </svg>
+    <ComboboxPrimitive.Empty
+      className={cn(
+        "text-muted px-4 py-4 text-sm leading-4 empty:m-0 empty:p-0",
+        className,
+      )}
+      {...props}
+    />
   );
 }
 
-function ClearIcon(props: React.ComponentProps<'svg'>) {
+function ComboboxList({
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.List>) {
+  return <ComboboxPrimitive.List {...props} />;
+}
+
+function ComboboxItem({
+  children,
+  className,
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.Item>) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <ComboboxPrimitive.Item
+      className={cn(
+        "grid cursor-default grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-4 text-sm leading-4 outline-none select-none data-[highlighted]:relative data-[highlighted]:z-0 data-[highlighted]:text-gray-50 data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-2 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:z-[-1] data-[highlighted]:before:bg-gray-900",
+        className,
+      )}
       {...props}
     >
-      <path d="M18 6L6 18" />
-      <path d="M6 6l12 12" />
-    </svg>
+      <ComboboxPrimitive.ItemIndicator className="col-start-1">
+        <CheckIcon className="size-3" />
+      </ComboboxPrimitive.ItemIndicator>
+      <div className="col-start-2 flex flex-row gap-2">{children}</div>
+    </ComboboxPrimitive.Item>
   );
 }
 
-function ChevronDownIcon(props: React.ComponentProps<'svg'>) {
+function ComboboxContent({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.Positioner>) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M6 9l6 6 6-6" />
-    </svg>
+    <ComboboxPortal>
+      <ComboboxPrimitive.Positioner
+        className="z-30 outline-none"
+        sideOffset={4}
+      >
+        <ComboboxPrimitive.Popup
+          className={cn(
+            "outline-border max-h-[min(var(--available-height),23rem)] w-[var(--anchor-width)] max-w-[var(--available-width)] origin-[var(--transform-origin)] scroll-pt-2 scroll-pb-2 overflow-y-auto overscroll-contain bg-[canvas] py-2 text-gray-900 shadow-sm outline transition-[transform,scale,opacity] data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[side=none]:data-[ending-style]:transition-none data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[side=none]:data-[starting-style]:scale-100 data-[side=none]:data-[starting-style]:opacity-100 data-[side=none]:data-[starting-style]:transition-none dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300",
+            className,
+          )}
+          {...props}
+        >
+          {children}
+        </ComboboxPrimitive.Popup>
+      </ComboboxPrimitive.Positioner>
+    </ComboboxPortal>
   );
 }
 
-const fruits = [
-  'Apple',
-  'Banana',
-  'Orange',
-  'Pineapple',
-  'Grape',
-  'Mango',
-  'Strawberry',
-  'Blueberry',
-  'Raspberry',
-  'Blackberry',
-  'Cherry',
-  'Peach',
-  'Pear',
-  'Plum',
-  'Kiwi',
-  'Watermelon',
-  'Cantaloupe',
-  'Honeydew',
-  'Papaya',
-  'Guava',
-  'Lychee',
-  'Pomegranate',
-  'Apricot',
-  'Grapefruit',
-  'Passionfruit',
-];
+export {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+  ComboboxPortal,
+  ComboboxPositioner,
+};
