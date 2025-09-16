@@ -1,9 +1,5 @@
 <p align="center">
-    <picture>
-        <source media="(prefers-color-scheme: dark)" srcset="public/logo-dark.svg" />
-        <source media="(prefers-color-scheme: light)" srcset="public/logo.svg" />
-        <img width="595.5" height="101.25" src="public/logo.svg">
-    </picture>
+    <img width="595.5" height="101.25" src="public/logo.svg">
 </p>
 
 ---
