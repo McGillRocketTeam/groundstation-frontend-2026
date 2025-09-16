@@ -1,5 +1,9 @@
 <p align="center">
-<img width="128" height="128" src="https://mcgillrocketteam.com/favicon.svg">
+    <picture>
+        <source media="(prefers-color-scheme: dark)" srcset="public/logo-dark.svg" />
+        <source media="(prefers-color-scheme: light)" srcset="public/logo.svg" />
+        <img width="595.5" height="101.25" src="public/logo.svg">
+    </picture>
 </p>
 
 ---
