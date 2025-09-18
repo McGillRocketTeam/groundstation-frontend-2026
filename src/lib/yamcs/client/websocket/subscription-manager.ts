@@ -3,6 +3,7 @@ import {
   Effect,
   HashMap,
   Option,
+  ParseResult,
   PubSub,
   Ref,
   Schedule,
@@ -58,8 +59,9 @@ export class YamcsSubscriptionManager extends Effect.Service<YamcsSubscriptionMa
             );
           }).pipe(
             Effect.flatMap(() =>
-              Effect.logInfo(`sent subscription request for ${handler.type}`),
+              Effect.logInfo(`Sent subscription request for ${handler.type}`),
             ),
+            Effect.annotateLogs({ id }),
           );
 
           yield* Effect.addFinalizer(() =>
@@ -100,15 +102,15 @@ export class YamcsSubscriptionManager extends Effect.Service<YamcsSubscriptionMa
                 );
               }),
             ),
-            Stream.tap(() =>
+            Stream.tap(({ callId }) =>
               Effect.logInfo(
-                `successfully subscribed to ${handler.type} with ID ${id}`,
-              ),
+                `Successfully subscribed to "${handler.type}"`,
+              ).pipe(Effect.annotateLogs({ id, callId })),
             ),
             Stream.timeoutFail(() => new Cause.TimeoutException(), "5 seconds"),
             Stream.tapError(() =>
               Effect.logInfo(
-                `failed to subscribe to ${handler.type} with ID ${id}`,
+                `Failed to subscribe to ${handler.type} with ID ${id}`,
               ),
             ),
             Stream.runDrain,
@@ -140,7 +142,14 @@ export class YamcsSubscriptionManager extends Effect.Service<YamcsSubscriptionMa
           if (Option.isNone(sub)) return;
 
           const payload = yield* Effect.option(
-            Schema.decodeUnknown(sub.value.schema)(event),
+            Schema.decodeUnknown(sub.value.schema)(event).pipe(
+              Effect.tapErrorTag("ParseError", (error) =>
+                Effect.logError(
+                  `Unable to parse WebSocket message for type "${sub.value.type}"`,
+                  ParseResult.TreeFormatter.formatErrorSync(error),
+                ),
+              ),
+            ),
           );
           if (Option.isNone(payload)) return;
 

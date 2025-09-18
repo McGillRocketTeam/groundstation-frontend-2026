@@ -24,8 +24,13 @@ export class YamcsWebsocketSubscription extends Effect.Service<YamcsWebsocketSub
       const subscriptionManager = yield* YamcsSubscriptionManager;
 
       const setup = Effect.gen(function* () {
-        const ws = new WebSocket("ws://localhost:8090/api/websocket");
+        const wsUrl = "ws://localhost:8090/api/websocket";
+        const ws = new WebSocket(wsUrl);
         const counter = yield* makeCounter(1);
+
+        yield* Effect.logInfo("Attempting to connect to YAMCS WebsSocket").pipe(
+          Effect.annotateLogs({ url: wsUrl }),
+        );
 
         // Websocket will be closed when the Effect's scope ends
         yield* Effect.addFinalizer(() => Effect.sync(() => ws.close()));
@@ -47,7 +52,7 @@ export class YamcsWebsocketSubscription extends Effect.Service<YamcsWebsocketSub
                 Effect.map((data) => Chunk.make(data)),
                 // We weren't able to parse a message from the server
                 Effect.tapErrorTag("ParseError", (error) =>
-                  Effect.logWarning(
+                  Effect.logError(
                     "Unable to parse WebSocket Message",
                     ParseResult.TreeFormatter.formatErrorSync(error),
                   ),
@@ -103,11 +108,6 @@ export class YamcsWebsocketSubscription extends Effect.Service<YamcsWebsocketSub
         const replyStream = source.pipe(
           Stream.filter(Schema.is(ServerMessage.Reply)),
           Stream.tap((event) =>
-            Effect.log(
-              `Got reply to id ${event.data.replyTo}, call ${event.call}`,
-            ),
-          ),
-          Stream.tap((event) =>
             subscriptionManager.confirmSubscription(
               event.data.replyTo!,
               event.call!,
@@ -132,13 +132,13 @@ export class YamcsWebsocketSubscription extends Effect.Service<YamcsWebsocketSub
         Effect.retry({
           schedule: Schedule.jittered(
             Schedule.exponential("300 millis", 1.25).pipe(
-              // The retry will back off exponentially until 3 seconds
-              Schedule.map((duration) => Duration.min(duration, "3 seconds")),
+              // The retry will back off exponentially until 2 seconds
+              Schedule.map((duration) => Duration.min(duration, "2 seconds")),
             ),
           ),
         }),
         Effect.onInterrupt(() =>
-          Effect.logInfo("websocket connection interrupted"),
+          Effect.logWarning("WebSocket connection interrupted"),
         ),
       );
 
