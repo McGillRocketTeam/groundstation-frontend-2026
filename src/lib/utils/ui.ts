@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 const TitleAnnotation = Symbol.for("effect/annotation/Title");
-const DescriptionAnnotation = Symbol.for("effect/annotation/Title");
+const DescriptionAnnotation = Symbol.for("effect/annotation/Description");
 
 export const annotations = <A, I, R>(schema: Schema.Schema<A, I, R>) => ({
   title: SchemaAST.getAnnotation<string>(TitleAnnotation)(schema.ast).pipe(

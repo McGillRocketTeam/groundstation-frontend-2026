@@ -21,7 +21,7 @@ export function RootErrorBoundary() {
           <h1>Unexpected Error</h1>
           <p>MESSAGE: {error.message}</p>
         </div>
-        <div className="border-neutral bg-neutral-background text-neutral border p-2">
+        <div className="border-neutral bg-neutral-background text-neutral overflow-scroll border p-2">
           <h2 className="font-semibold">STACK TRACE</h2>
           {error.stack && <pre className="font-normal">{error.stack}</pre>}
         </div>

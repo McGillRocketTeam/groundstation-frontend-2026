@@ -10,7 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type React from "react";
-import { ScrollArea } from "../ui/scroll-area";
+import { TextCardConfiguration } from "../cards/text";
 import { AddCardForm } from "./add-card-form";
 
 type TriggerType = NonNullable<
@@ -29,13 +29,18 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="h-full max-h-[calc(100vh-15rem)]">
-          <AddCardForm />
-        </ScrollArea>
+        {/* <ScrollArea className="h-full max-h-[calc(100vh-15rem)] overflow-x-auto"> */}
+        <AddCardForm
+          schema={TextCardConfiguration}
+          onSubmit={(values) => console.log(values)}
+        />
+        {/* </ScrollArea> */}
 
         <DialogFooter>
           <DialogClose render={<Button variant="outline">Cancel</Button>} />
-          <DialogClose render={<Button>Add</Button>} />
+          <Button type="submit" form="add-card-form">
+            Add
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

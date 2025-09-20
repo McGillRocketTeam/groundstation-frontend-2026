@@ -16,6 +16,11 @@ type CardComponentMap = {
   >;
 };
 
+export const CardUnion = Schema.Union(
+  ButtonCardConfiguration,
+  TextCardConfiguration,
+);
+
 // Match cards with their schemas
 export const cardSchemaMap = {
   text: TextCardConfiguration,

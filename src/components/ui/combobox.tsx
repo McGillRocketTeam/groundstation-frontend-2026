@@ -11,8 +11,11 @@ function Combobox({
 
 function ComboboxInput({
   className,
+  onClear,
   ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Input>) {
+}: React.ComponentProps<typeof ComboboxPrimitive.Input> & {
+  onClear?: () => void;
+}) {
   return (
     <div className="relative flex flex-col gap-1 text-sm">
       <ComboboxPrimitive.Input
@@ -27,6 +30,7 @@ function ComboboxInput({
 
       <div className="text-muted absolute right-2 bottom-0 flex h-10 items-center justify-center">
         <ComboboxPrimitive.Clear
+          onClick={onClear}
           className="flex h-10 w-6 items-center justify-center p-0"
           aria-label="Clear selection"
         >
