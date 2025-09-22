@@ -3,6 +3,7 @@ import { annotations } from "@/lib/utils/ui";
 import { effectTsResolver } from "@hookform/resolvers/effect-ts";
 import { Schema } from "effect";
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
 
 type SchemaType<T extends Schema.Schema<any, any>> = Schema.Schema.Type<T>;
@@ -30,13 +31,13 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
   type FormData = SchemaType<T>;
   const {
     register,
-    // control,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({
     resolver: effectTsResolver(schema),
     defaultValues: {
-      _tag: "Hello",
+      // @ts-expect-error I'm not sure why it doesn't recognize _tag here
+      _tag: "TextCard",
       text: "asdfsadf",
     },
   });
@@ -46,16 +47,18 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
   return (
     <form
       id="add-card-form"
-      onSubmit={onSubmit && handleSubmit(onSubmit)}
+      onSubmit={onSubmit && handleSubmit(onSubmit as any)}
       className="flex flex-col gap-4 font-[Public_Sans]"
     >
       {fields.map((field) => (
         <div className="flex flex-col gap-2" key={field.key}>
           <div>{field.title ?? field.key}</div>
           <Input className="font-[JetBrains_Mono]" {...register(field.key)} />
-          <p className="text-error text-sm">
-            {errors[field.key]?.message as string}
-          </p>
+          {errors[field.key]?.message && (
+            <Badge variant="error">
+              {errors[field.key]?.message as string}
+            </Badge>
+          )}
         </div>
       ))}
     </form>
