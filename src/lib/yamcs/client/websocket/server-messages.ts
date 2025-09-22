@@ -38,16 +38,14 @@ export const State = Schema.Struct({
 });
 
 /*     Event Server Messages     */
-export const Timestamp = Schema.Struct({
-  type: Schema.Literal("time"),
+export const Update = Schema.Struct({
+  type: Schema.Literal("time", "links"),
   call: SubscriptionId,
   seq: Schema.NonNegativeInt,
-  data: Schema.Struct({
-    value: Schema.Date,
-  }),
+  data: Schema.Unknown,
 });
 
-export const Events = Schema.Union(Timestamp);
+export const Events = Schema.Union(Update);
 
-export const Messages = Schema.Union(Reply, State, Timestamp);
+export const Messages = Schema.Union(Reply, State, Update);
 export type Messages = typeof Messages.Type;

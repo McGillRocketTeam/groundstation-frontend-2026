@@ -20,6 +20,7 @@
     "@tailwindcss/vite": "^4.1.13",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dockview": "^4.7.1",
     "dockview-react": "^4.7.1",
     "effect": "^3.17.13",
     "effect-ts": "link:@hookform/resolvers/effect-ts",

@@ -1,3 +1,5 @@
+import { connectionStatusAtom } from "@/lib/atoms/connection-status";
+import { Atom } from "@effect-atom/atom-react";
 import {
   Cause,
   Chunk,
@@ -33,7 +35,12 @@ export class YamcsWebsocketSubscription extends Effect.Service<YamcsWebsocketSub
         );
 
         // Websocket will be closed when the Effect's scope ends
-        yield* Effect.addFinalizer(() => Effect.sync(() => ws.close()));
+        yield* Effect.addFinalizer(() =>
+          Effect.gen(function* () {
+            yield* Atom.set(connectionStatusAtom, "disconnected");
+            yield* Effect.sync(() => ws.close());
+          }),
+        );
 
         ws.onopen = () => {
           const id = Effect.runSync(counter.get);
@@ -94,6 +101,7 @@ export class YamcsWebsocketSubscription extends Effect.Service<YamcsWebsocketSub
         yield* connectionAckLatch
           .whenOpen(
             Effect.gen(function* () {
+              yield* Atom.set(connectionStatusAtom, "connected");
               const subscribeToChannels = Effect.forEach(
                 eventHandlers,
                 (handler) => subscriptionManager.subscribe({ handler, ws }),
@@ -128,6 +136,7 @@ export class YamcsWebsocketSubscription extends Effect.Service<YamcsWebsocketSub
         );
       }).pipe(
         Effect.scoped,
+        Effect.tapErrorCause((e) => Effect.logError(e)),
         Effect.catchAllCause(() => new Cause.TimeoutException()),
         Effect.retry({
           schedule: Schedule.jittered(

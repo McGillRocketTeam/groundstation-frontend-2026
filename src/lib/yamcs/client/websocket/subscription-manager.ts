@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Cause,
   Effect,
@@ -141,8 +142,10 @@ export class YamcsSubscriptionManager extends Effect.Service<YamcsSubscriptionMa
           );
           if (Option.isNone(sub)) return;
 
-          const payload = yield* Effect.option(
-            Schema.decodeUnknown(sub.value.schema)(event).pipe(
+          const payloadOpt = yield* Effect.option(
+            Schema.decodeUnknown(
+              sub.value.schema as Schema.Schema<any, any, any>,
+            )(event).pipe(
               Effect.tapErrorTag("ParseError", (error) =>
                 Effect.logError(
                   `Unable to parse WebSocket message for type "${sub.value.type}"`,
@@ -151,9 +154,9 @@ export class YamcsSubscriptionManager extends Effect.Service<YamcsSubscriptionMa
               ),
             ),
           );
-          if (Option.isNone(payload)) return;
+          if (Option.isNone(payloadOpt)) return;
 
-          yield* sub.value.handle(payload.value);
+          yield* sub.value.handle(payloadOpt.value);
         });
 
       return { subscribe, confirmSubscription, handleEvent };

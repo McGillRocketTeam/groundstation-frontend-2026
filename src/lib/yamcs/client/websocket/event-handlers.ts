@@ -5,38 +5,37 @@ const linksHandler = ({ instance }: { instance: string }) =>
   createEventHandler({
     type: "links",
     schema: Schema.Struct({
-      instance: Schema.String,
-      name: Schema.String,
-      type: Schema.String,
-      spec: Schema.String,
-      disabled: Schema.Boolean,
-      status: Schema.String,
-      dataInCount: Schema.NumberFromString,
-      dataOutCount: Schema.NumberFromString,
-      detailedStatus: Schema.String,
-      parentName: Schema.optional(Schema.String),
-      parameters: Schema.Array(Schema.String),
-    }),
-    options: {
-      instance,
-    },
-    handle: (data) => Effect.logInfo(data),
-  });
-
-const timeHandler = ({ instance }: { instance: string }) =>
-  createEventHandler({
-    type: "time",
-    schema: Schema.Struct({
       links: Schema.Array(
         Schema.Struct({
-          value: Schema.DateFromSelf,
+          instance: Schema.String,
+          name: Schema.String,
+          type: Schema.String,
+          disabled: Schema.Boolean,
+          status: Schema.String,
+          dataInCount: Schema.NumberFromString,
+          dataOutCount: Schema.NumberFromString,
+          // detailedStatus: Schema.String,
+          parentName: Schema.optional(Schema.String),
+          parameters: Schema.optional(Schema.Array(Schema.String)),
         }),
       ),
     }),
     options: {
       instance,
     },
-    handle: (data) => Effect.logInfo(data),
+    handle: (data) => Effect.logInfo("Got Link Data", data),
+  });
+
+const timeHandler = ({ instance }: { instance: string }) =>
+  createEventHandler({
+    type: "time",
+    schema: Schema.Struct({
+      value: Schema.DateFromString,
+    }),
+    options: {
+      instance,
+    },
+    handle: (data) => Effect.logInfo("Got Time", data),
   });
 
 export const eventHandlers = [

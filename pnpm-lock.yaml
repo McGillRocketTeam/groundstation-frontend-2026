@@ -35,6 +35,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      dockview:
+        specifier: ^4.7.1
+        version: 4.7.1(react@19.1.1)
       dockview-react:
         specifier: ^4.7.1
         version: 4.7.1(react@19.1.1)

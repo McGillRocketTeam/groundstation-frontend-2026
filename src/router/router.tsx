@@ -1,6 +1,6 @@
 import { YamcsWebsocketSubscription } from "@/lib/yamcs/client/websocket/websocket";
-import { Effect, Fiber, Logger, ManagedRuntime } from "effect";
-import { useEffect } from "react";
+import { Atom, useAtomValue } from "@effect-atom/atom-react";
+import { Effect, Layer, Logger } from "effect";
 import { createBrowserRouter } from "react-router";
 import { SharedLayout } from "./layout/shared-layout";
 import { DashboardPage } from "./pages/dashboard";
@@ -29,21 +29,19 @@ export const router = createBrowserRouter([
   },
 ]);
 
-const MyRuntime = ManagedRuntime.make(YamcsWebsocketSubscription.Default);
+const atomRuntime = Atom.runtime(
+  Layer.mergeAll(YamcsWebsocketSubscription.Default, Logger.pretty),
+);
+
+const websocketAtom = atomRuntime.atom(
+  Effect.gen(function* () {
+    const websocket = yield* YamcsWebsocketSubscription;
+    return yield* websocket.setup;
+  }),
+);
 
 // eslint-disable-next-line react-refresh/only-export-components
 function WebsocketTesting() {
-  useEffect(() => {
-    const fiber = MyRuntime.runFork(
-      YamcsWebsocketSubscription.setup.pipe(
-        Effect.provide(Logger.pretty),
-        Effect.catchAll((e) => Effect.logError(e)),
-      ),
-    );
-
-    return () => {
-      MyRuntime.runCallback(Fiber.interrupt(fiber));
-    };
-  });
+  useAtomValue(websocketAtom);
   return <div>Hello World</div>;
 }
