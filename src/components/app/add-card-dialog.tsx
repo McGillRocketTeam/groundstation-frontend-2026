@@ -37,10 +37,11 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
         <AddCardForm
           schema={TextCardConfiguration}
           onSubmit={({ _tag, ...values }) => {
-            const exit = addCard({
-              id: "card-1",
-              component: "TextCard",
+            addCard({
+              id: crypto.randomUUID(),
+              component: _tag,
               title: "My Card",
+              params: values,
             });
 
             // if (Exit.isFailure(exit)) {

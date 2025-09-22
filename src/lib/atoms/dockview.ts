@@ -6,7 +6,8 @@ export interface AddCardArgs {
   id: string;
   component: string;
   title: string;
-  [key: string]: unknown;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  params: any;
 }
 
 //global dockviewApiAtom (writable)
