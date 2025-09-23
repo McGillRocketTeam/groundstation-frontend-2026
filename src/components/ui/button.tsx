@@ -55,5 +55,4 @@ function Button({
   return element;
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export { Button, buttonVariants };

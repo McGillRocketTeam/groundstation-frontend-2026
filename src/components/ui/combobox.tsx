@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils/ui";
 import { Combobox as ComboboxPrimitive } from "@base-ui-components/react/combobox";
 import { CheckIcon, ChevronDownIcon, Cross1Icon } from "@radix-ui/react-icons";
 import * as React from "react";
+import { inputStyle } from "./input";
 
 function Combobox({
   ...props
@@ -12,21 +13,14 @@ function Combobox({
 function ComboboxInput({
   className,
   onClear,
-  renderSelection,
   ...props
 }: React.ComponentProps<typeof ComboboxPrimitive.Input> & {
   onClear?: () => void;
-  renderSelection?: (value: any) => string;
 }) {
   return (
     <div className="relative flex flex-col gap-1 text-sm">
       <ComboboxPrimitive.Input
-        className={cn(
-          "selection:bg-primary selection:text-primary-foreground border-input flex h-9 w-full min-w-0 border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-          "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-          "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-          className,
-        )}
+        className={cn(inputStyle, className)}
         {...props}
       />
 
@@ -90,7 +84,7 @@ function ComboboxItem({
   return (
     <ComboboxPrimitive.Item
       className={cn(
-        "grid cursor-default grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-4 text-sm leading-4 outline-none select-none data-[highlighted]:relative data-[highlighted]:z-0 data-[highlighted]:text-gray-50 data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-2 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:z-[-1] data-[highlighted]:before:bg-gray-900",
+        "data-[highlighted]:before:bg-muted grid cursor-default grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-4 text-sm leading-4 outline-none select-none data-[highlighted]:relative data-[highlighted]:z-0 data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-2 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:z-[-1]",
         className,
       )}
       {...props}
@@ -116,7 +110,7 @@ function ComboboxContent({
       >
         <ComboboxPrimitive.Popup
           className={cn(
-            "outline-border max-h-[min(var(--available-height),23rem)] w-[var(--anchor-width)] max-w-[var(--available-width)] origin-[var(--transform-origin)] scroll-pt-2 scroll-pb-2 overflow-y-auto overscroll-contain bg-[canvas] py-2 text-gray-900 shadow-sm outline transition-[transform,scale,opacity] data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[side=none]:data-[ending-style]:transition-none data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[side=none]:data-[starting-style]:scale-100 data-[side=none]:data-[starting-style]:opacity-100 data-[side=none]:data-[starting-style]:transition-none dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300",
+            "outline-border max-h-[min(var(--available-height),23rem)] w-[var(--anchor-width)] max-w-[var(--available-width)] origin-[var(--transform-origin)] scroll-pt-2 scroll-pb-2 overflow-y-auto overscroll-contain bg-[canvas] py-2 shadow-sm outline transition-[transform,scale,opacity] data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[side=none]:data-[ending-style]:transition-none data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[side=none]:data-[starting-style]:scale-100 data-[side=none]:data-[starting-style]:opacity-100 data-[side=none]:data-[starting-style]:transition-none dark:shadow-none dark:-outline-offset-1",
             className,
           )}
           {...props}
