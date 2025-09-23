@@ -12,9 +12,11 @@ function Combobox({
 function ComboboxInput({
   className,
   onClear,
+  renderSelection,
   ...props
 }: React.ComponentProps<typeof ComboboxPrimitive.Input> & {
   onClear?: () => void;
+  renderSelection?: (value: any) => string;
 }) {
   return (
     <div className="relative flex flex-col gap-1 text-sm">

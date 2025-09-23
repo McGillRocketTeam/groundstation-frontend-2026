@@ -37,8 +37,7 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
     resolver: effectTsResolver(schema),
     defaultValues: {
       // @ts-expect-error I'm not sure why it doesn't recognize _tag here
-      _tag: "TextCard",
-      text: "asdfsadf",
+      _tag: schema.fields._tag.ast.type.literal,
     },
   });
 
@@ -50,17 +49,19 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
       onSubmit={onSubmit && handleSubmit(onSubmit as any)}
       className="flex flex-col gap-4 font-[Public_Sans]"
     >
-      {fields.map((field) => (
-        <div className="flex flex-col gap-2" key={field.key}>
-          <div>{field.title ?? field.key}</div>
-          <Input className="font-[JetBrains_Mono]" {...register(field.key)} />
-          {errors[field.key]?.message && (
-            <Badge variant="error">
-              {errors[field.key]?.message as string}
-            </Badge>
-          )}
-        </div>
-      ))}
+      {fields
+        .filter((field) => field.key !== "_tag")
+        .map((field) => (
+          <div className="flex flex-col gap-2" key={field.key}>
+            <div>{field.title ?? field.key}</div>
+            <Input className="font-[JetBrains_Mono]" {...register(field.key)} />
+            {errors[field.key]?.message && (
+              <Badge variant="error">
+                {errors[field.key]?.message as string}
+              </Badge>
+            )}
+          </div>
+        ))}
     </form>
   );
 }

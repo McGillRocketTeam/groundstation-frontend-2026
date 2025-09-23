@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
-import { Option, SchemaAST, type Schema } from "effect";
+import { Option, Schema, SchemaAST } from "effect";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -9,7 +9,10 @@ export function cn(...inputs: ClassValue[]) {
 const TitleAnnotation = Symbol.for("effect/annotation/Title");
 const DescriptionAnnotation = Symbol.for("effect/annotation/Description");
 
-export const annotations = <A, I, R>(schema: Schema.Schema<A, I, R>) => ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type WithAst = Pick<Schema.Schema<any, any, any>, "ast">;
+
+export const annotations = (schema: WithAst) => ({
   title: SchemaAST.getAnnotation<string>(TitleAnnotation)(schema.ast).pipe(
     Option.getOrUndefined,
   ),

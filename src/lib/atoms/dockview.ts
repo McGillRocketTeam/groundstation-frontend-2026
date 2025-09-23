@@ -28,11 +28,9 @@ export const addCardAtom = Atom.fn(
     const api = apiOpt.value;
 
     try {
+      console.log(args);
       api.addPanel({
-        id: args.id,
-        component: args.component,
-        title: args.title,
-        params: args,
+        ...args,
       });
       return yield* Effect.succeed(true);
     } catch (err) {

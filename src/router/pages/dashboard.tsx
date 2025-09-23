@@ -2,6 +2,7 @@ import { AddCardDialog } from "@/components/app/add-card-dialog";
 import { TextCard } from "@/components/cards/text";
 import { Button } from "@/components/ui/button";
 import { dockviewApiAtom } from "@/lib/atoms/dockview";
+import { cardComponentMap } from "@/lib/cards/card-configuration";
 import { useAtomSet } from "@effect-atom/atom-react";
 import {
   DockviewReact,
@@ -10,7 +11,7 @@ import {
 } from "dockview-react";
 import "dockview/dist/styles/dockview.css";
 import { Option } from "effect";
-import { useState } from "react";
+import { useState, type FunctionComponent } from "react";
 
 const components = {
   TextCard: TextCard,
@@ -35,7 +36,7 @@ export function DashboardPage() {
       <DockviewReact
         theme={themeLight}
         onReady={onReady}
-        components={components}
+        components={cardComponentMap as Record<string, FunctionComponent>}
       />
 
       {/* If there are no panels, show a special error */}

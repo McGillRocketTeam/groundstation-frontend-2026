@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
 import {
+  Combobox,
+  ComboboxContent,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from "@/components/ui/combobox";
+import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -10,17 +17,29 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { addCardAtom } from "@/lib/atoms/dockview";
+import { cardSchemaMap } from "@/lib/cards/card-configuration";
+import { annotations } from "@/lib/utils/ui";
 import { useAtomSet } from "@effect-atom/atom-react";
 import type React from "react";
-import { TextCardConfiguration } from "../cards/text";
+import { useState } from "react";
+import { Input } from "../ui/input";
 import { AddCardForm } from "./add-card-form";
 
 type TriggerType = NonNullable<
   React.ComponentProps<typeof DialogTrigger>["render"]
 >;
 
+const cardSchemas = Object.keys(cardSchemaMap);
+type CardSchemaKey = keyof typeof cardSchemaMap;
+
 export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
   const addCard = useAtomSet(addCardAtom);
+
+  const [selectedSchemaKey, setSelectedSchemaKey] = useState<
+    CardSchemaKey | ""
+  >("");
+
+  const [title, setTitle] = useState("");
 
   return (
     <Dialog>
@@ -33,34 +52,44 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
           </DialogDescription>
         </DialogHeader>
 
-        {/* <ScrollArea className="h-full max-h-[calc(100vh-15rem)] overflow-x-auto"> */}
-        <AddCardForm
-          schema={TextCardConfiguration}
-          onSubmit={({ _tag, ...values }) => {
-            addCard({
-              id: crypto.randomUUID(),
-              component: _tag,
-              title: "My Card",
-              params: values,
-            });
+        <Combobox
+          value={selectedSchemaKey}
+          onValueChange={(value) =>
+            setSelectedSchemaKey(value as CardSchemaKey)
+          }
+          items={cardSchemas}
+        >
+          <ComboboxInput placeholder="Select Card" />
+          <ComboboxContent>
+            <ComboboxList>
+              {(item: CardSchemaKey) => (
+                <ComboboxItem key={item} value={item}>
+                  {annotations(cardSchemaMap[item]).title ?? "Unknown Card"}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
 
-            // if (Exit.isFailure(exit)) {
-            //   console.error("Failed to add card:", exit.cause);
-            // }
-            // if (dockviewApi) {
-            //   dockviewApi.addPanel({
-            //     id: crypto.randomUUID(),
-            //     component: _tag,
-            //     params: values,
-            //   });
-            // } else {
-            //   console.warn(
-            //     "Tried to add dashboard panel but `dockviewApi` was undefined",
-            //   );
-            // }
-          }}
+        <Input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Card Title"
         />
-        {/* </ScrollArea> */}
+
+        {selectedSchemaKey && (
+          <AddCardForm
+            schema={cardSchemaMap[selectedSchemaKey]}
+            onSubmit={({ _tag, ...values }) => {
+              addCard({
+                id: crypto.randomUUID(),
+                component: _tag,
+                title: title,
+                params: values,
+              });
+            }}
+          />
+        )}
 
         <DialogFooter>
           <DialogClose render={<Button variant="outline">Cancel</Button>} />
