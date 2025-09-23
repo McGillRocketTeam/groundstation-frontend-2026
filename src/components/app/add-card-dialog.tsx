@@ -5,6 +5,7 @@ import {
   ComboboxInput,
   ComboboxItem,
   ComboboxList,
+  ComboboxTrigger,
 } from "@/components/ui/combobox";
 import {
   Dialog,
@@ -36,8 +37,8 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
   const addCard = useAtomSet(addCardAtom);
 
   const [selectedSchemaKey, setSelectedSchemaKey] = useState<
-    CardSchemaKey | ""
-  >("");
+    CardSchemaKey | "Select Card"
+  >("Select Card");
 
   const [title, setTitle] = useState("");
 
@@ -59,8 +60,9 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
           }
           items={cardSchemas}
         >
-          <ComboboxInput placeholder="Select Card" />
+          <ComboboxTrigger />
           <ComboboxContent>
+            <ComboboxInput inPopup placeholder="Search..." />
             <ComboboxList>
               {(item: CardSchemaKey) => (
                 <ComboboxItem key={item} value={item}>
@@ -71,13 +73,20 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
           </ComboboxContent>
         </Combobox>
 
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="Card Title"
-        />
+        <div className="flex flex-col gap-2">
+          <label className="text-sm" htmlFor="card-title">
+            Card Title
+          </label>
+          <Input
+            id="card-title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
+        </div>
 
-        {selectedSchemaKey && (
+        <hr />
+
+        {selectedSchemaKey !== "Select Card" && (
           <AddCardForm
             schema={cardSchemaMap[selectedSchemaKey]}
             onSubmit={({ _tag, ...values }) => {

@@ -6,7 +6,6 @@ export interface AddCardArgs {
   id: string;
   component: string;
   title: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params: any;
 }
 

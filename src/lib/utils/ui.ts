@@ -9,7 +9,6 @@ export function cn(...inputs: ClassValue[]) {
 const TitleAnnotation = Symbol.for("effect/annotation/Title");
 const DescriptionAnnotation = Symbol.for("effect/annotation/Description");
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type WithAst = Pick<Schema.Schema<any, any, any>, "ast">;
 
 export const annotations = (schema: WithAst) => ({

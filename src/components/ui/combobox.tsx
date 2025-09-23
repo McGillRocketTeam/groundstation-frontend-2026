@@ -1,6 +1,11 @@
 import { cn } from "@/lib/utils/ui";
 import { Combobox as ComboboxPrimitive } from "@base-ui-components/react/combobox";
-import { CheckIcon, ChevronDownIcon, Cross1Icon } from "@radix-ui/react-icons";
+import {
+  CaretSortIcon,
+  CheckIcon,
+  ChevronDownIcon,
+  Cross1Icon,
+} from "@radix-ui/react-icons";
 import * as React from "react";
 import { inputStyle } from "./input";
 
@@ -10,35 +15,62 @@ function Combobox({
   return <ComboboxPrimitive.Root {...props} />;
 }
 
+function ComboboxTrigger({
+  className,
+  ...props
+}: React.ComponentProps<typeof ComboboxPrimitive.Trigger>) {
+  return (
+    <ComboboxPrimitive.Trigger
+      className={cn(
+        inputStyle,
+        "data-[popup-open]:bg-muted flex flex-row items-center justify-between gap-3",
+        className,
+      )}
+      {...props}
+    >
+      <ComboboxPrimitive.Value />
+      <ComboboxPrimitive.Icon className="flex">
+        <CaretSortIcon />
+      </ComboboxPrimitive.Icon>
+    </ComboboxPrimitive.Trigger>
+  );
+}
+
 function ComboboxInput({
   className,
+  inPopup,
   onClear,
   ...props
 }: React.ComponentProps<typeof ComboboxPrimitive.Input> & {
+  inPopup?: boolean;
   onClear?: () => void;
 }) {
   return (
-    <div className="relative flex flex-col gap-1 text-sm">
+    <div
+      className={cn("relative flex flex-col gap-1 text-sm", inPopup && "p-3")}
+    >
       <ComboboxPrimitive.Input
         className={cn(inputStyle, className)}
         {...props}
       />
 
-      <div className="text-muted absolute right-2 bottom-0 flex h-10 items-center justify-center">
-        <ComboboxPrimitive.Clear
-          onClick={onClear}
-          className="flex h-10 w-6 items-center justify-center p-0"
-          aria-label="Clear selection"
-        >
-          <Cross1Icon className="size-4 translate-y-0.5" />
-        </ComboboxPrimitive.Clear>
-        <ComboboxPrimitive.Trigger
-          className="flex h-10 w-6 items-center justify-center p-0"
-          aria-label="Open popup"
-        >
-          <ChevronDownIcon className="size-4 translate-y-0.5" />
-        </ComboboxPrimitive.Trigger>
-      </div>
+      {!inPopup && (
+        <div className="text-muted absolute right-2 bottom-0 flex h-10 items-center justify-center">
+          <ComboboxPrimitive.Clear
+            onClick={onClear}
+            className="flex h-10 w-6 items-center justify-center p-0"
+            aria-label="Clear selection"
+          >
+            <Cross1Icon className="size-4 translate-y-0.5" />
+          </ComboboxPrimitive.Clear>
+          <ComboboxPrimitive.Trigger
+            className="flex h-10 w-6 items-center justify-center p-0"
+            aria-label="Open popup"
+          >
+            <ChevronDownIcon className="size-4 translate-y-0.5" />
+          </ComboboxPrimitive.Trigger>
+        </div>
+      )}
     </div>
   );
 }
@@ -105,6 +137,7 @@ function ComboboxContent({
   return (
     <ComboboxPortal>
       <ComboboxPrimitive.Positioner
+        align="start"
         className="z-30 outline-none"
         sideOffset={4}
       >
@@ -131,4 +164,5 @@ export {
   ComboboxList,
   ComboboxPortal,
   ComboboxPositioner,
+  ComboboxTrigger,
 };

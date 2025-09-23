@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { annotations } from "@/lib/utils/ui";
+import { structFields } from "@/lib/utils/schema";
 import { effectTsResolver } from "@hookform/resolvers/effect-ts";
 import { Schema } from "effect";
-import { useForm, type SubmitHandler } from "react-hook-form";
+import { useForm, type Path, type SubmitHandler } from "react-hook-form";
+import { Checkbox } from "../ui/checkbox";
 import {
   Form,
   FormControl,
@@ -14,19 +14,6 @@ import {
 import { Input } from "../ui/input";
 
 type SchemaType<T extends Schema.Schema<any, any>> = Schema.Schema.Type<T>;
-
-// Extract "shape" (the object fields) from a TaggedStruct or Struct
-function getShape(schema: any) {
-  // @ts-expect error some effect magic necessary here
-  if (schema.fields) {
-    return Object.entries(schema.fields).map(([key, field]) => ({
-      key: key as any,
-      ...annotations(field as any),
-    }));
-  }
-
-  return [];
-}
 
 export function AddCardForm<T extends Schema.Schema<any, any>>({
   schema,
@@ -44,7 +31,7 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
     },
   });
 
-  const fields = getShape(schema);
+  const fields = structFields(schema);
 
   return (
     <Form {...form}>
@@ -55,59 +42,43 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
       >
         {fields
           .filter((field) => field.key !== "_tag")
-          .map((formField) => (
-            <FormField
-              // @ts-expect-error we are doing some weird field stuff
-              // here so types are wonky
-              control={form.control}
-              name={formField.key}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{formField.title}</FormLabel>
-                  <FormControl {...field} render={<Input />} />
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          ))}
+          .map((formField) => {
+            // how can I get this properly typed to the exact field key
+            const fieldKey = formField.key as Path<FormData>;
+            return (
+              <FormField
+                // @ts-expect-error we are doing some weird field stuff
+                // here so types are wonky
+                control={form.control}
+                name={fieldKey}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{formField.title ?? formField.key}</FormLabel>
+                    <FormControl
+                      {...field}
+                      render={(fieldControl) => {
+                        switch (formField.type) {
+                          case "boolean":
+                            return (
+                              <Checkbox
+                                onCheckedChange={(v) =>
+                                  form.setValue(fieldKey, v as any)
+                                }
+                                {...fieldControl}
+                              />
+                            );
+                          default:
+                            return <Input {...fieldControl} />;
+                        }
+                      }}
+                    />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            );
+          })}
       </form>
     </Form>
   );
-}
-
-{
-  /* <div className="flex flex-col gap-2" key={field.key}> */
-}
-{
-  /*   <div>{field.title ?? field.key}</div> */
-}
-{
-  /*   <Input */
-}
-{
-  /*     className="font-[JetBrains_Mono]" */
-}
-{
-  /*     {...register(field.key)} */
-}
-{
-  /*   /> */
-}
-{
-  /*   {errors[field.key]?.message && ( */
-}
-{
-  /*     <Badge variant="error"> */
-}
-{
-  /*       {errors[field.key]?.message as string} */
-}
-{
-  /*     </Badge> */
-}
-{
-  /*   )} */
-}
-{
-  /* </div> */
 }
