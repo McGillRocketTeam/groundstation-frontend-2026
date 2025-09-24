@@ -5,12 +5,14 @@ import { cardComponentMap } from "@/lib/cards/card-configuration";
 import { useAtomSet } from "@effect-atom/atom-react";
 import {
   DockviewReact,
-  themeLight,
+  themeAbyssSpaced,
   type DockviewReadyEvent,
 } from "dockview-react";
-import "dockview/dist/styles/dockview.css";
 import { Option } from "effect";
 import { useState } from "react";
+
+import { DashboardTab } from "@/components/app/dashboard-tab";
+import "./dashboard.css";
 
 export function DashboardPage() {
   const setDockviewApi = useAtomSet(dockviewApiAtom);
@@ -24,14 +26,32 @@ export function DashboardPage() {
     setPanelCount(api.totalPanels);
     api.onDidAddPanel(() => setPanelCount(api.totalPanels));
     api.onDidRemovePanel(() => setPanelCount(api.totalPanels));
+
+    api.addPanel({
+      id: crypto.randomUUID(),
+      component: "TextCard",
+      params: {
+        text: "Card1",
+        boolean: false,
+      },
+    });
+    api.addPanel({
+      id: crypto.randomUUID(),
+      component: "TextCard",
+      params: {
+        text: "Card2",
+        boolean: false,
+      },
+    });
   }
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-[calc(100%-10px)] w-full">
       <DockviewReact
-        theme={themeLight}
+        theme={themeAbyssSpaced}
         onReady={onReady}
         components={cardComponentMap}
+        defaultTabComponent={DashboardTab}
       />
 
       {/* If there are no panels, show a special error */}

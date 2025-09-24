@@ -10,8 +10,10 @@ export function SharedLayout() {
     <div className="flex h-full flex-col">
       <div className="flex flex-row items-center justify-between border-b p-3">
         <div>
-          <div className="text-mrt-red uppercase">McGill Rocket Team</div>
-          <div className="text-sm uppercase">Ground Station</div>
+          <div className="text-mrt-red text-sm uppercase">
+            McGill Rocket Team
+          </div>
+          <div className="text-xs uppercase">Ground Station</div>
         </div>
 
         <ConnectionStatus />

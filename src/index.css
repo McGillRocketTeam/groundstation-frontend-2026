@@ -68,7 +68,7 @@ html:is(.dark) {
   --muted-foreground: var(--color-neutral-600);
 
   --neutral: var(--color-neutral-200);
-  --neutral-background: var(--color-neutral-950);
+  --neutral-background: var(--color-neutral-900);
   --success: var(--color-emerald-200);
   --success-background: var(--color-emerald-950);
   --warning: var(--color-yellow-200);
@@ -97,22 +97,23 @@ html:is(.dark) {
   }
 }
 
+html,
+body {
+  overscroll-behavior: none;
+}
+
 .crossed {
   background:
-    linear-gradient(
-      to top left,
+    linear-gradient(to top left,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0) calc(50% - 0.8px),
       var(--border) 50%,
       rgba(0, 0, 0, 0) calc(50% + 0.8px),
-      rgba(0, 0, 0, 0) 100%
-    ),
-    linear-gradient(
-      to top right,
+      rgba(0, 0, 0, 0) 100%),
+    linear-gradient(to top right,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0) calc(50% - 0.8px),
       var(--border) 50%,
       rgba(0, 0, 0, 0) calc(50% + 0.8px),
-      rgba(0, 0, 0, 0) 100%
-    );
+      rgba(0, 0, 0, 0) 100%);
 }
