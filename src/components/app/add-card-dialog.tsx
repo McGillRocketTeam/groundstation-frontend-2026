@@ -45,7 +45,7 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
   return (
     <Dialog>
       <DialogTrigger render={trigger} />
-      <DialogContent>
+      <DialogContent className="bg-neutral-background">
         <DialogHeader>
           <DialogTitle>Add Card</DialogTitle>
           <DialogDescription className="sr-only">

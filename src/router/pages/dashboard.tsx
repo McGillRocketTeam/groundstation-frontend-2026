@@ -11,7 +11,7 @@ import {
 import { Option } from "effect";
 import { useState } from "react";
 
-import { DashboardTab } from "@/components/app/dashboard-tab";
+import { DashboardTab } from "@/components/app/DashboardTab";
 import "./dashboard.css";
 
 export function DashboardPage() {

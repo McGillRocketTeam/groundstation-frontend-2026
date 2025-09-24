@@ -43,7 +43,7 @@ html:is(.dark) {
   --border: var(--color-neutral-300);
   --ring: var(--color-neutral-950);
 
-  --muted: var(--color-neutral-200);
+  --muted: var(--color-neutral-300);
   --muted-foreground: var(--color-neutral-400);
 
   --neutral: var(--color-neutral-700);
@@ -104,16 +104,20 @@ body {
 
 .crossed {
   background:
-    linear-gradient(to top left,
+    linear-gradient(
+      to top left,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0) calc(50% - 0.8px),
       var(--border) 50%,
       rgba(0, 0, 0, 0) calc(50% + 0.8px),
-      rgba(0, 0, 0, 0) 100%),
-    linear-gradient(to top right,
+      rgba(0, 0, 0, 0) 100%
+    ),
+    linear-gradient(
+      to top right,
       rgba(0, 0, 0, 0) 0%,
       rgba(0, 0, 0, 0) calc(50% - 0.8px),
       var(--border) 50%,
       rgba(0, 0, 0, 0) calc(50% + 0.8px),
-      rgba(0, 0, 0, 0) 100%);
+      rgba(0, 0, 0, 0) 100%
+    );
 }
