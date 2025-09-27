@@ -1,4 +1,5 @@
 import type { CardConfigurationUnion } from "@/lib/cards/card-configuration";
+import { Cross2Icon } from "@radix-ui/react-icons";
 import type { IDockviewPanelHeaderProps } from "dockview-react";
 
 export function DashboardTab(
