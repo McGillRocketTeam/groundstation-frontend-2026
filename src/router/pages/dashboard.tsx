@@ -11,7 +11,7 @@ import {
 import { Option } from "effect";
 import { useState } from "react";
 
-import { DashboardTab } from "@/components/app/DashboardTab";
+import { DashboardTab } from "@/components/app/dashboard-tab";
 import "./dashboard.css";
 
 export function DashboardPage() {
@@ -30,6 +30,7 @@ export function DashboardPage() {
     api.addPanel({
       id: crypto.randomUUID(),
       component: "TextCard",
+      title: "Tab One",
       params: {
         text: "Card1",
         boolean: false,
@@ -38,6 +39,7 @@ export function DashboardPage() {
     api.addPanel({
       id: crypto.randomUUID(),
       component: "TextCard",
+      title: "Tab Two",
       params: {
         text: "Card2",
         boolean: false,
