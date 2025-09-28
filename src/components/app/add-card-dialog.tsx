@@ -38,7 +38,7 @@ type DefaultValues = {
   params: Record<string, any>;
 };
 
-type AddCardDialogProps = {
+export type AddCardDialogProps = {
   defaultValues?: DefaultValues;
   onSubmit?: (card: {
     title: string;
@@ -76,9 +76,25 @@ export function AddCardDialog({
   );
 
   const [title, setTitle] = useState(defaultValues?.title ?? "");
+  const [internalOpen, setInternalOpen] = useState(false);
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open ? open : internalOpen}
+      onOpenChange={(isOpen) => {
+        if (onOpenChange) {
+          onOpenChange(isOpen);
+        } else {
+          setInternalOpen(isOpen);
+          // Reset the form every time it's opened
+          // only if it's not controlled
+          if (isOpen) {
+            setSelectedSchemaKey("Select Card");
+            setTitle("");
+          }
+        }
+      }}
+    >
       {trigger && <DialogTrigger render={trigger} />}
       <DialogContent className="bg-neutral-background">
         <DialogHeader>
@@ -126,19 +142,25 @@ export function AddCardDialog({
             schema={cardSchemaMap[selectedSchemaKey]}
             defaultParams={defaultValues?.params}
             onSubmit={({ _tag, ...values }) => {
+              const params = {
+                _tag,
+                ...values,
+              };
+
               if (onSubmit) {
                 onSubmit({
                   component: _tag,
-                  title: title,
-                  params: values,
+                  title,
+                  params,
                 });
               } else {
                 addCard({
                   id: crypto.randomUUID(),
                   component: _tag,
-                  title: title,
-                  params: values,
+                  title,
+                  params,
                 });
+                setInternalOpen(false);
               }
             }}
           />

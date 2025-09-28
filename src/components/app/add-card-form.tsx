@@ -47,38 +47,57 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
         {fields
           .filter((field) => field.key !== "_tag")
           .map((formField) => {
-            // how can I get this properly typed to the exact field key
             const fieldKey = formField.key as Path<FormData>;
-            return (
-              <FormField
-                control={form.control}
-                name={fieldKey}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{formField.title ?? formField.key}</FormLabel>
-                    <FormControl
-                      {...field}
-                      render={(fieldControl) => {
-                        switch (formField.type) {
-                          case "boolean":
-                            return (
-                              <Checkbox
-                                onCheckedChange={(v) =>
-                                  form.setValue(fieldKey, v as any)
-                                }
-                                {...fieldControl}
-                              />
-                            );
-                          default:
-                            return <Input {...fieldControl} />;
-                        }
-                      }}
-                    />
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            );
+
+            switch (formField.type) {
+              case "boolean":
+                return (
+                  <FormField
+                    defaultValue={false as any}
+                    control={form.control}
+                    name={fieldKey}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {formField.title ?? formField.key}
+                        </FormLabel>
+                        <FormControl
+                          {...field}
+                          render={(fieldControl) => (
+                            <Checkbox
+                              checked={!!field.value}
+                              onCheckedChange={(v) =>
+                                form.setValue(fieldKey, v as any)
+                              }
+                              {...fieldControl}
+                            />
+                          )}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+              default:
+                return (
+                  <FormField
+                    control={form.control}
+                    name={fieldKey}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {formField.title ?? formField.key}
+                        </FormLabel>
+                        <FormControl
+                          {...field}
+                          render={(fieldControl) => <Input {...fieldControl} />}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+            }
           })}
       </form>
     </Form>

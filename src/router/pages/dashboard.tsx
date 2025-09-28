@@ -11,6 +11,7 @@ import {
 import { Option } from "effect";
 import { useState } from "react";
 
+import { DashboardPlus } from "@/components/app/dashboard-plus";
 import { DashboardTab } from "@/components/app/dashboard-tab";
 import "./dashboard.css";
 
@@ -55,6 +56,7 @@ export function DashboardPage() {
         theme={themeAbyssSpaced}
         onReady={onReady}
         components={cardComponentMap}
+        leftHeaderActionsComponent={DashboardPlus}
         defaultTabComponent={DashboardTab}
       />
 

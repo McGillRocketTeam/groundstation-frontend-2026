@@ -9,12 +9,31 @@ import type { CardConfigurationUnion } from "@/lib/cards/card-configuration";
 import { Pencil1Icon, TrashIcon } from "@radix-ui/react-icons";
 import type { IDockviewPanelHeaderProps } from "dockview-react";
 import React, { useState } from "react";
-import { AddCardDialog } from "./add-card-dialog";
+import { AddCardDialog, type AddCardDialogProps } from "./add-card-dialog";
 
 export function DashboardTab(
   props: IDockviewPanelHeaderProps<CardConfigurationUnion>,
 ) {
   const [showEditDialog, setShowEditDialog] = useState(false);
+
+  const updateCard: NonNullable<AddCardDialogProps["onSubmit"]> = (card) => {
+    const currentPanel = props.containerApi.getPanel(props.api.id);
+    if (!currentPanel) {
+      console.warn("Unable to delete panel, could not find id.");
+      return;
+    }
+
+    // The cleanest way to update the panel is to
+    // remove the old one and replace it.
+    //
+    // This is because we can't change the underlying component type
+    // easily so we can just remake the whole thing.
+    props.containerApi.removePanel(currentPanel);
+    props.containerApi.addPanel({
+      id: crypto.randomUUID(),
+      ...card,
+    });
+  };
 
   return (
     <React.Fragment>
@@ -60,23 +79,7 @@ export function DashboardTab(
           title: props.api.title,
           params: props.params,
         }}
-        onSubmit={(card) => {
-          const currentPanel = props.containerApi.getPanel(props.api.id);
-          if (!currentPanel) {
-            console.warn("Unable to delete panel, could not find id.");
-            return;
-          }
-          // The cleanest way to update the panel is to
-          // remove the old one and replace it.
-          //
-          // This is because we can't change the underlying component type
-          // easily so we can just remake the whole thing.
-          props.containerApi.removePanel(currentPanel);
-          props.containerApi.addPanel({
-            id: crypto.randomUUID(),
-            ...card,
-          });
-        }}
+        onSubmit={updateCard}
       />
     </React.Fragment>
   );
