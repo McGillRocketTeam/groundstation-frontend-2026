@@ -8,7 +8,7 @@ export function TextCard(
   return (
     <div className="crossed grid h-full w-full place-items-center">
       <div className="bg-neutral-background text-neutral border px-2">
-       No Content 
+        No Content
       </div>
     </div>
   );

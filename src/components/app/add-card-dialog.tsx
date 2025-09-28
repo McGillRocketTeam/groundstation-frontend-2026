@@ -32,22 +32,57 @@ type TriggerType = NonNullable<
 
 const cardSchemas = Object.keys(cardSchemaMap);
 type CardSchemaKey = keyof typeof cardSchemaMap;
+type DefaultValues = {
+  schema: string;
+  title: string | undefined;
+  params: Record<string, any>;
+};
 
-export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
+type AddCardDialogProps = {
+  defaultValues?: DefaultValues;
+  onSubmit?: (card: {
+    title: string;
+    component: string;
+    params: Record<string, any>;
+  }) => void;
+} & (
+  | {
+      trigger: TriggerType;
+      open?: never;
+      onOpenChange?: never;
+    }
+  | {
+      trigger?: never;
+      open: boolean;
+      onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
+    }
+);
+
+export function AddCardDialog({
+  defaultValues,
+  trigger,
+  open,
+  onOpenChange,
+  onSubmit,
+}: AddCardDialogProps) {
   const addCard = useAtomSet(addCardAtom);
 
   const [selectedSchemaKey, setSelectedSchemaKey] = useState<
     CardSchemaKey | "Select Card"
-  >("Select Card");
+  >(
+    defaultValues?.schema
+      ? (defaultValues.schema as CardSchemaKey)
+      : "Select Card",
+  );
 
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState(defaultValues?.title ?? "");
 
   return (
-    <Dialog>
-      <DialogTrigger render={trigger} />
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      {trigger && <DialogTrigger render={trigger} />}
       <DialogContent className="bg-neutral-background">
         <DialogHeader>
-          <DialogTitle>Add Card</DialogTitle>
+          <DialogTitle>{defaultValues ? "Edit Card" : "Add Card"}</DialogTitle>
           <DialogDescription className="sr-only">
             Configure your card for dashboard.
           </DialogDescription>
@@ -89,13 +124,22 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
         {selectedSchemaKey !== "Select Card" && (
           <AddCardForm
             schema={cardSchemaMap[selectedSchemaKey]}
+            defaultParams={defaultValues?.params}
             onSubmit={({ _tag, ...values }) => {
-              addCard({
-                id: crypto.randomUUID(),
-                component: _tag,
-                title: title,
-                params: values,
-              });
+              if (onSubmit) {
+                onSubmit({
+                  component: _tag,
+                  title: title,
+                  params: values,
+                });
+              } else {
+                addCard({
+                  id: crypto.randomUUID(),
+                  component: _tag,
+                  title: title,
+                  params: values,
+                });
+              }
             }}
           />
         )}
@@ -103,7 +147,7 @@ export function AddCardDialog({ trigger }: { trigger: TriggerType }) {
         <DialogFooter>
           <DialogClose render={<Button variant="outline">Cancel</Button>} />
           <Button type="submit" form="add-card-form">
-            Add
+            {defaultValues ? "Save" : "Add"}
           </Button>
         </DialogFooter>
       </DialogContent>

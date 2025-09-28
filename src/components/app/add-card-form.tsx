@@ -13,13 +13,16 @@ import {
 } from "../ui/form";
 import { Input } from "../ui/input";
 
-type SchemaType<T extends Schema.Schema<any, any>> = Schema.Schema.Type<T>;
+export type SchemaType<T extends Schema.Schema<any, any>> =
+  Schema.Schema.Type<T>;
 
 export function AddCardForm<T extends Schema.Schema<any, any>>({
   schema,
+  defaultParams,
   onSubmit,
 }: {
   schema: T;
+  defaultParams?: any;
   onSubmit?: SubmitHandler<SchemaType<T>>;
 }) {
   type FormData = SchemaType<T>;
@@ -28,6 +31,7 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
     defaultValues: {
       // @ts-expect-error I'm not sure why it doesn't recognize _tag here
       _tag: schema.fields._tag.ast.type.literal,
+      ...defaultParams,
     },
   });
 
@@ -47,8 +51,6 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
             const fieldKey = formField.key as Path<FormData>;
             return (
               <FormField
-                // @ts-expect-error we are doing some weird field stuff
-                // here so types are wonky
                 control={form.control}
                 name={fieldKey}
                 render={({ field }) => (

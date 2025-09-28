@@ -32,6 +32,7 @@ export function DashboardPage() {
       component: "TextCard",
       title: "Tab One",
       params: {
+        _tag: "TextCard",
         text: "Card1",
         boolean: false,
       },
@@ -41,6 +42,7 @@ export function DashboardPage() {
       component: "TextCard",
       title: "Tab Two",
       params: {
+        _tag: "TextCard",
         text: "Card2",
         boolean: false,
       },
