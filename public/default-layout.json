@@ -1,0 +1,55 @@
+{
+  "grid": {
+    "root": {
+      "type": "branch",
+      "data": [
+        {
+          "type": "leaf",
+          "data": {
+            "views": ["47b981d6-115e-44e8-a24a-a38716fbc6d9"],
+            "activeView": "47b981d6-115e-44e8-a24a-a38716fbc6d9",
+            "id": "1"
+          },
+          "size": 409
+        },
+        {
+          "type": "leaf",
+          "data": {
+            "views": ["c7303830-a765-45f9-9c7b-78e2712249fa"],
+            "activeView": "c7303830-a765-45f9-9c7b-78e2712249fa",
+            "id": "2"
+          },
+          "size": 409
+        }
+      ],
+      "size": 841
+    },
+    "width": 828,
+    "height": 841,
+    "orientation": "HORIZONTAL"
+  },
+  "panels": {
+    "47b981d6-115e-44e8-a24a-a38716fbc6d9": {
+      "id": "47b981d6-115e-44e8-a24a-a38716fbc6d9",
+      "contentComponent": "TextCard",
+      "tabComponent": "props.defaultTabComponent",
+      "params": {
+        "_tag": "TextCard",
+        "text": "Card1",
+        "boolean": false
+      },
+      "title": "Tab One"
+    },
+    "c7303830-a765-45f9-9c7b-78e2712249fa": {
+      "id": "c7303830-a765-45f9-9c7b-78e2712249fa",
+      "contentComponent": "TextCard",
+      "tabComponent": "props.defaultTabComponent",
+      "params": {
+        "_tag": "TextCard",
+        "text": "Card2",
+        "boolean": false
+      },
+      "title": "Tab Two"
+    }
+  }
+}

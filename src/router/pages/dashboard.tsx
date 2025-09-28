@@ -2,7 +2,7 @@ import { AddCardDialog } from "@/components/app/add-card-dialog";
 import { Button } from "@/components/ui/button";
 import { dockviewApiAtom } from "@/lib/atoms/dockview";
 import { cardComponentMap } from "@/lib/cards/card-configuration";
-import { useAtomSet } from "@effect-atom/atom-react";
+import { useAtom, useAtomSet } from "@effect-atom/atom-react";
 import {
   DockviewReact,
   themeAbyssSpaced,
@@ -13,11 +13,14 @@ import { useState } from "react";
 
 import { DashboardPlus } from "@/components/app/dashboard-plus";
 import { DashboardTab } from "@/components/app/dashboard-tab";
+import { dashboardAtom } from "@/lib/atoms/dashboard";
 import "./dashboard.css";
 
 export function DashboardPage() {
   const setDockviewApi = useAtomSet(dockviewApiAtom);
   const [panelCount, setPanelCount] = useState(0);
+
+  const [layout, setLayout] = useAtom(dashboardAtom);
 
   function onReady(event: DockviewReadyEvent) {
     const api = event.api;
@@ -28,25 +31,12 @@ export function DashboardPage() {
     api.onDidAddPanel(() => setPanelCount(api.totalPanels));
     api.onDidRemovePanel(() => setPanelCount(api.totalPanels));
 
-    api.addPanel({
-      id: crypto.randomUUID(),
-      component: "TextCard",
-      title: "Tab One",
-      params: {
-        _tag: "TextCard",
-        text: "Card1",
-        boolean: false,
-      },
-    });
-    api.addPanel({
-      id: crypto.randomUUID(),
-      component: "TextCard",
-      title: "Tab Two",
-      params: {
-        _tag: "TextCard",
-        text: "Card2",
-        boolean: false,
-      },
+    api.fromJSON(layout);
+
+    api.onDidLayoutChange(() => {
+      console.log("Layout Changed");
+      const layout = api.toJSON();
+      setLayout(layout);
     });
   }
 
