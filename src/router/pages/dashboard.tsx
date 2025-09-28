@@ -2,7 +2,7 @@ import { AddCardDialog } from "@/components/app/add-card-dialog";
 import { Button } from "@/components/ui/button";
 import { dockviewApiAtom } from "@/lib/atoms/dockview";
 import { cardComponentMap } from "@/lib/cards/card-configuration";
-import { useAtom, useAtomSet } from "@effect-atom/atom-react";
+import { useAtomSet } from "@effect-atom/atom-react";
 import {
   DockviewReact,
   themeAbyssSpaced,
@@ -13,16 +13,23 @@ import { useState } from "react";
 
 import { DashboardPlus } from "@/components/app/dashboard-plus";
 import { DashboardTab } from "@/components/app/dashboard-tab";
-import { dashboardAtom } from "@/lib/atoms/dashboard";
+import { useDashboard, type DashboardSlug } from "@/lib/atoms/dashboard";
 import "./dashboard.css";
 
-export function DashboardPage() {
+export function DashboardPage({ slug }: { slug: DashboardSlug }) {
   const setDockviewApi = useAtomSet(dockviewApiAtom);
   const [panelCount, setPanelCount] = useState(0);
 
-  const [layout, setLayout] = useAtom(dashboardAtom);
+  const [dashboard, setDashboard] = useDashboard(slug);
+
+  if (dashboard === undefined) {
+    throw new Error(`Dashboard "${slug}" was not found.`);
+  }
 
   function onReady(event: DockviewReadyEvent) {
+    if (dashboard === undefined) {
+      throw new Error(`Dashboard "${slug}" was not found.`);
+    }
     const api = event.api;
     // We store the reference to dockview api so we can use it later
     setDockviewApi(Option.some(api));
@@ -31,12 +38,12 @@ export function DashboardPage() {
     api.onDidAddPanel(() => setPanelCount(api.totalPanels));
     api.onDidRemovePanel(() => setPanelCount(api.totalPanels));
 
-    api.fromJSON(layout);
+    api.fromJSON(dashboard.dockviewLayout);
 
     api.onDidLayoutChange(() => {
       console.log("Layout Changed");
       const layout = api.toJSON();
-      setLayout(layout);
+      setDashboard({ ...dashboard, dockviewLayout: layout });
     });
   }
 

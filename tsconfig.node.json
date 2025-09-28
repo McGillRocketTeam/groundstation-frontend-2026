@@ -21,12 +21,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-
     "plugins": [
       {
         "name": "@effect/language-service"
       }
     ]
   },
-  "include": ["vite.config.ts"],
+  "include": ["vite.config.ts"]
 }
