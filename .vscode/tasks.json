@@ -1,0 +1,19 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "dev",
+			"problemMatcher": [],
+			"label": "npm: dev",
+			"detail": "vite"
+		},
+		{
+			"type": "npm",
+			"script": "ci:fix",
+			"problemMatcher": [],
+			"label": "npm: ci:fix",
+			"detail": "pnpm exec eslint . --ext .js,.ts,.jsx,.tsx --fix && pnpm exec prettier --write ."
+		}
+	]
+}
