@@ -34,7 +34,7 @@ function getAnnotation<T>(
 function getBaseType(ast: AST.AST): string {
   // Check brand on the current node first (brands may sit on TypeLiteral, etc.)
   const brand = getBrandName(ast);
-  if (brand) return `custom<${brand}>`;
+  if (brand) return `custom(${brand})`;
 
   switch (ast._tag) {
     case "Refinement":

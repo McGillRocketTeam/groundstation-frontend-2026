@@ -1,13 +1,5 @@
 import { Button } from "@/components/ui/button";
 import {
-  Combobox,
-  ComboboxContent,
-  ComboboxInput,
-  ComboboxItem,
-  ComboboxList,
-  ComboboxTrigger,
-} from "@/components/ui/combobox";
-import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -23,6 +15,19 @@ import { annotations } from "@/lib/utils/ui";
 import { useAtomSet } from "@effect-atom/atom-react";
 import type React from "react";
 import { useState } from "react";
+import {
+  Combobox,
+  ComboboxEmpty,
+  ComboboxIcon,
+  ComboboxItem,
+  ComboboxItemIndicator,
+  ComboboxList,
+  ComboboxPopup,
+  ComboboxPortal,
+  ComboboxPositioner,
+  ComboboxTrigger,
+  ComboboxValue,
+} from "../ui/combobox";
 import { Input } from "../ui/input";
 import { AddCardForm } from "./add-card-form";
 
@@ -57,6 +62,13 @@ export type AddCardDialogProps = {
       onOpenChange: React.Dispatch<React.SetStateAction<boolean>>;
     }
 );
+
+const itemToString = (item: string) => {
+  return item === "Select Card"
+    ? "Select Card"
+    : (annotations(cardSchemaMap[item as keyof typeof cardSchemaMap]).title ??
+        item);
+};
 
 export function AddCardDialog({
   defaultValues,
@@ -106,22 +118,29 @@ export function AddCardDialog({
 
         <Combobox
           value={selectedSchemaKey}
-          onValueChange={(value) =>
-            setSelectedSchemaKey(value as CardSchemaKey)
-          }
+          onValueChange={setSelectedSchemaKey}
           items={cardSchemas}
+          itemToStringLabel={itemToString}
         >
-          <ComboboxTrigger />
-          <ComboboxContent>
-            <ComboboxInput inPopup placeholder="Search..." />
-            <ComboboxList>
-              {(item: CardSchemaKey) => (
-                <ComboboxItem key={item} value={item}>
-                  {annotations(cardSchemaMap[item]).title ?? "Unknown Card"}
-                </ComboboxItem>
-              )}
-            </ComboboxList>
-          </ComboboxContent>
+          <ComboboxTrigger>
+            <ComboboxValue />
+            <ComboboxIcon />
+          </ComboboxTrigger>
+          <ComboboxPortal>
+            <ComboboxPositioner className="z-50">
+              <ComboboxPopup>
+                <ComboboxEmpty>No Parameters Found.</ComboboxEmpty>
+                <ComboboxList>
+                  {(schema) => (
+                    <ComboboxItem key={schema} value={schema}>
+                      <ComboboxItemIndicator />
+                      <div className="col-start-2">{itemToString(schema)}</div>
+                    </ComboboxItem>
+                  )}
+                </ComboboxList>
+              </ComboboxPopup>
+            </ComboboxPositioner>
+          </ComboboxPortal>
         </Combobox>
 
         <div className="flex flex-col gap-2">

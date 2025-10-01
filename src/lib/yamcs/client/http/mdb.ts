@@ -25,6 +25,11 @@ const ListSpaceSystemsResponse = Schema.Struct({
   totalSize: Schema.Int,
 });
 
+const UrlParams = Schema.Struct({
+  q: Schema.String.pipe(Schema.optional),
+  limit: Schema.NumberFromString.pipe(Schema.optional),
+});
+
 export const mdbGroup = HttpApiGroup.make("mdb")
   .add(
     HttpApiEndpoint.get("getMissionDatabase")`/${instanceParam}`.addSuccess(
@@ -32,9 +37,9 @@ export const mdbGroup = HttpApiGroup.make("mdb")
     ),
   )
   .add(
-    HttpApiEndpoint.get(
-      "listParameters",
-    )`/${instanceParam}/parameters`.addSuccess(ListParametersResponse),
+    HttpApiEndpoint.get("listParameters")`/${instanceParam}/parameters`
+      .setUrlParams(UrlParams)
+      .addSuccess(ListParametersResponse),
   )
   .add(
     HttpApiEndpoint.get(

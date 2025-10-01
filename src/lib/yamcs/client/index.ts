@@ -1,4 +1,4 @@
-import { AtomHttpApi } from "@effect-atom/atom-react";
+import { AtomHttpApi, useAtomValue } from "@effect-atom/atom-react";
 import { FetchHttpClient, HttpClient } from "@effect/platform";
 import { Effect, Schedule } from "effect";
 import { YamcsApi } from "./http";
@@ -19,3 +19,15 @@ export class YamcsClient extends AtomHttpApi.Tag<YamcsClient>()("YamcsClient", {
       }),
     ),
 }) {}
+
+// create a wrapper that uses the types of this function to pass down but makes url params {} by default
+export function useYamcs() {
+  return useAtomValue(
+    YamcsClient.query("mdb", "listParameters", {
+      urlParams: {},
+      path: {
+        instance: "mqtt-frames",
+      },
+    }),
+  );
+}

@@ -41,7 +41,6 @@ export function DashboardPage({ slug }: { slug: DashboardSlug }) {
     api.fromJSON(dashboard.dockviewLayout);
 
     api.onDidLayoutChange(() => {
-      console.log("Layout Changed");
       const layout = api.toJSON();
       setDashboard({ ...dashboard, dockviewLayout: layout });
     });

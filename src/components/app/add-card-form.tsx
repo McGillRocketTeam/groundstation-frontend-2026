@@ -12,6 +12,7 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
+import { ParameterSelector } from "./form/parameter-selector";
 
 export type SchemaType<T extends Schema.Schema<any, any>> =
   Schema.Schema.Type<T>;
@@ -78,7 +79,7 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
                     )}
                   />
                 );
-              default:
+              case "string":
                 return (
                   <FormField
                     control={form.control}
@@ -87,6 +88,52 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
                       <FormItem>
                         <FormLabel>
                           {formField.title ?? formField.key}
+                        </FormLabel>
+                        <FormControl
+                          {...field}
+                          render={(fieldControl) => <Input {...fieldControl} />}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+              case "custom(YAMCSParameterInfo)":
+                return (
+                  <FormField
+                    control={form.control}
+                    name={fieldKey}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {formField.title ?? formField.key}
+                        </FormLabel>
+                        <FormControl
+                          {...field}
+                          render={(fieldControl) => (
+                            <ParameterSelector
+                              value={field.value}
+                              onValueChange={(value) =>
+                                form.setValue(fieldKey, value as any)
+                              }
+                              inputProps={fieldControl}
+                            />
+                          )}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+              default:
+                return (
+                  <FormField
+                    control={form.control}
+                    name={fieldKey}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {formField.title ?? formField.key} "{formField.type}"
                         </FormLabel>
                         <FormControl
                           {...field}

@@ -1,168 +1,167 @@
-import { cn } from "@/lib/utils/ui";
-import { Combobox as ComboboxPrimitive } from "@base-ui-components/react/combobox";
 import {
-  CaretSortIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  Cross1Icon,
-} from "@radix-ui/react-icons";
-import * as React from "react";
-import { inputStyle } from "./input";
+  Combobox as ComboboxPrimitive,
+  mergeProps,
+} from "@base-ui-components/react";
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
-function Combobox({
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Root>) {
+function Combobox<ItemValue, SelectedValue>(
+  props: React.ComponentProps<
+    typeof ComboboxPrimitive.Root<ItemValue, SelectedValue>
+  >,
+) {
   return <ComboboxPrimitive.Root {...props} />;
 }
 
-function ComboboxTrigger({
-  className,
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Trigger>) {
-  return (
-    <ComboboxPrimitive.Trigger
-      className={cn(
-        inputStyle,
-        "data-[popup-open]:bg-muted flex flex-row items-center justify-between gap-3",
-        className,
-      )}
-      {...props}
-    >
-      <ComboboxPrimitive.Value />
-      <ComboboxPrimitive.Icon className="flex">
-        <CaretSortIcon />
-      </ComboboxPrimitive.Icon>
-    </ComboboxPrimitive.Trigger>
+function ComboboxInput(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Input>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.Input>(
+    {
+      className:
+        "h-10 w-full font-normal border pl-3.5 text-base focus:outline focus:outline-1 focus:-outline-offset-1 aria-invalid:ring-error/15 dark:aria-invalid:ring-error/40 aria-invalid:border-error",
+    },
+    props,
   );
+
+  return <ComboboxPrimitive.Input {...combinedProps} />;
 }
 
-function ComboboxInput({
-  className,
-  inPopup,
-  onClear,
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Input> & {
-  inPopup?: boolean;
-  onClear?: () => void;
-}) {
-  return (
-    <div
-      className={cn("relative flex flex-col gap-1 text-sm", inPopup && "p-3")}
-    >
-      <ComboboxPrimitive.Input
-        className={cn(inputStyle, className)}
-        {...props}
-      />
-
-      {!inPopup && (
-        <div className="text-muted absolute right-2 bottom-0 flex h-10 items-center justify-center">
-          <ComboboxPrimitive.Clear
-            onClick={onClear}
-            className="flex h-10 w-6 items-center justify-center p-0"
-            aria-label="Clear selection"
-          >
-            <Cross1Icon className="size-4 translate-y-0.5" />
-          </ComboboxPrimitive.Clear>
-          <ComboboxPrimitive.Trigger
-            className="flex h-10 w-6 items-center justify-center p-0"
-            aria-label="Open popup"
-          >
-            <ChevronDownIcon className="size-4 translate-y-0.5" />
-          </ComboboxPrimitive.Trigger>
-        </div>
-      )}
-    </div>
+function ComboboxTrigger(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Trigger>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.Trigger>(
+    {
+      className:
+        "flex bg-[canvas] h-10 min-w-[12rem] items-center justify-between gap-3 border pr-3 pl-3.5 text-base select-none hover:bg-muted focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-1 focus-visible:outline-blue-800 data-[popup-open]:bg-muted cursor-default aria-invalid:ring-error/15 dark:aria-invalid:ring-error/40 aria-invalid:border-error md:text-sm",
+    },
+    props,
   );
+
+  return <ComboboxPrimitive.Trigger {...combinedProps} />;
 }
 
-function ComboboxPortal({
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Portal>) {
+function ComboboxValue(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Value>,
+) {
+  return <ComboboxPrimitive.Value {...props} />;
+}
+
+function ComboboxIcon(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Icon>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.Icon>(
+    {
+      className: "flex",
+      children: <CaretSortIcon />,
+    },
+    props,
+  );
+
+  return <ComboboxPrimitive.Icon {...combinedProps} />;
+}
+
+function ComboboxPortal(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Portal>,
+) {
   return <ComboboxPrimitive.Portal {...props} />;
 }
 
-function ComboboxPositioner({
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Positioner>) {
-  return <ComboboxPrimitive.Positioner {...props} />;
-}
-
-function ComboboxEmpty({
-  className,
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Empty>) {
-  return (
-    <ComboboxPrimitive.Empty
-      className={cn(
-        "text-muted px-4 py-4 text-sm leading-4 empty:m-0 empty:p-0",
-        className,
-      )}
-      {...props}
-    />
+function ComboboxPositioner(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Positioner>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.Positioner>(
+    {
+      align: "start",
+      sideOffset: 4,
+    },
+    props,
   );
+
+  return <ComboboxPrimitive.Positioner {...combinedProps} />;
 }
 
-function ComboboxList({
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.List>) {
-  return <ComboboxPrimitive.List {...props} />;
-}
-
-function ComboboxItem({
-  children,
-  className,
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Item>) {
-  return (
-    <ComboboxPrimitive.Item
-      className={cn(
-        "data-[highlighted]:before:bg-muted grid cursor-default grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-4 text-sm leading-4 outline-none select-none data-[highlighted]:relative data-[highlighted]:z-0 data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-2 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:z-[-1]",
-        className,
-      )}
-      {...props}
-    >
-      <ComboboxPrimitive.ItemIndicator className="col-start-1">
-        <CheckIcon className="size-3" />
-      </ComboboxPrimitive.ItemIndicator>
-      <div className="col-start-2 flex flex-row gap-2">{children}</div>
-    </ComboboxPrimitive.Item>
+function ComboboxPopup(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Popup>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.Popup>(
+    {
+      className:
+        "[--input-container-height:3rem] origin-[var(--transform-origin)] max-w-[var(--available-width)] max-h-[min(24rem,var(--available-height))] bg-[canvas] shadow-lg text-gray-900 outline-1 outline-gray-200 transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300 duration-100",
+      "aria-label": "Select One",
+    },
+    props,
   );
+
+  return <ComboboxPrimitive.Popup {...combinedProps} />;
 }
 
-function ComboboxContent({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof ComboboxPrimitive.Positioner>) {
-  return (
-    <ComboboxPortal>
-      <ComboboxPrimitive.Positioner
-        align="start"
-        className="z-30 outline-none"
-        sideOffset={4}
-      >
-        <ComboboxPrimitive.Popup
-          className={cn(
-            "outline-border max-h-[min(var(--available-height),23rem)] w-[var(--anchor-width)] max-w-[var(--available-width)] origin-[var(--transform-origin)] scroll-pt-2 scroll-pb-2 overflow-y-auto overscroll-contain bg-[canvas] py-2 shadow-sm outline transition-[transform,scale,opacity] data-[ending-style]:scale-95 data-[ending-style]:opacity-0 data-[side=none]:data-[ending-style]:transition-none data-[starting-style]:scale-95 data-[starting-style]:opacity-0 data-[side=none]:data-[starting-style]:scale-100 data-[side=none]:data-[starting-style]:opacity-100 data-[side=none]:data-[starting-style]:transition-none dark:shadow-none dark:-outline-offset-1",
-            className,
-          )}
-          {...props}
-        >
-          {children}
-        </ComboboxPrimitive.Popup>
-      </ComboboxPrimitive.Positioner>
-    </ComboboxPortal>
+function ComboboxEmpty(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Empty>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.Empty>(
+    {
+      className:
+        "p-4 text-[0.925rem] leading-4 text-muted-foreground empty:m-0 empty:p-0",
+    },
+    props,
   );
+
+  return <ComboboxPrimitive.Empty {...combinedProps} />;
+}
+
+function ComboboxList(
+  props: React.ComponentProps<typeof ComboboxPrimitive.List>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.List>(
+    {
+      className:
+        "overflow-y-auto scroll-py-2 py-2 overscroll-contain max-h-[min(calc(24rem-var(--input-container-height)),calc(var(--available-height)-var(--input-container-height)))] empty:p-0",
+    },
+    props,
+  );
+
+  return <ComboboxPrimitive.List {...combinedProps} />;
+}
+
+function ComboboxItem(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Item>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.Item>(
+    {
+      className:
+        "grid min-w-[var(--anchor-width)] cursor-default grid-cols-[0.75rem_1fr] items-center gap-2 py-2 pr-8 pl-4 text-base leading-4 outline-none select-none data-[highlighted]:relative data-[highlighted]:z-0 data-[highlighted]:text-gray-50 data-[highlighted]:before:absolute data-[highlighted]:before:inset-x-2 data-[highlighted]:before:inset-y-0 data-[highlighted]:before:z-[-1] data-[highlighted]:before:bg-gray-900 md:text-sm",
+    },
+    props,
+  );
+
+  return <ComboboxPrimitive.Item {...combinedProps} />;
+}
+
+function ComboboxItemIndicator(
+  props: React.ComponentProps<typeof ComboboxPrimitive.ItemIndicator>,
+) {
+  const combinedProps = mergeProps<typeof ComboboxPrimitive.ItemIndicator>(
+    {
+      className: "col-start-1",
+      children: <CheckIcon />,
+    },
+    props,
+  );
+
+  return <ComboboxPrimitive.ItemIndicator {...combinedProps} />;
 }
 
 export {
   Combobox,
-  ComboboxContent,
   ComboboxEmpty,
+  ComboboxIcon,
   ComboboxInput,
   ComboboxItem,
+  ComboboxItemIndicator,
   ComboboxList,
+  ComboboxPopup,
   ComboboxPortal,
   ComboboxPositioner,
   ComboboxTrigger,
+  ComboboxValue,
 };

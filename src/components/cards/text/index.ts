@@ -1,3 +1,4 @@
+import { ParameterInfoType } from "@/lib/cards/types";
 import { Schema } from "effect";
 import { TextCard } from "./text-card";
 
@@ -6,10 +7,9 @@ const TextCardConfiguration = Schema.TaggedStruct("TextCard", {
     Schema.minLength(5),
     Schema.annotations({
       title: "Body Text",
-      documentation: "asdfasdf",
     }),
   ),
-  parameter: Schema.Boolean,
+  parameter: ParameterInfoType.annotations({ title: "YAMCS Parameter" }),
 }).annotations({ title: "Text Card" });
 
 export { TextCard, TextCardConfiguration };

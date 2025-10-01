@@ -23,7 +23,8 @@ const linksHandler = ({ instance }: { instance: string }) =>
     options: {
       instance,
     },
-    handle: (data) => Effect.logInfo("Got Link Data", data),
+    // handle: (data) => Effect.logInfo("Got Link Data", data),
+    handle: () => Effect.void,
   });
 
 const timeHandler = ({ instance }: { instance: string }) =>
@@ -35,7 +36,8 @@ const timeHandler = ({ instance }: { instance: string }) =>
     options: {
       instance,
     },
-    handle: (data) => Effect.logInfo("Got Time", data),
+    // handle: (data) => Effect.logInfo("Got Time", data),
+    handle: () => Effect.void,
   });
 
 export const eventHandlers = [

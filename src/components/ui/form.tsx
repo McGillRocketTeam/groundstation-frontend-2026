@@ -157,7 +157,9 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
       className={cn("text-sm", className)}
       {...props}
     >
-      {body}
+      {(body as string).includes("actual undefined")
+        ? "This field is required."
+        : body}
     </Badge>
   );
 }
