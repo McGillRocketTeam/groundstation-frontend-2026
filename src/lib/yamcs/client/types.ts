@@ -202,3 +202,132 @@ export const MissionDatabase = Schema.Struct({
   algorithmCount: Schema.Number,
   parameterTypeCount: Schema.Number,
 });
+
+export const CommandId = Schema.String;
+export type CommandId = typeof CommandId.Type;
+
+export const CommandIdObject = Schema.Struct({
+  generationTime: Schema.DateFromString,
+  origin: Schema.String,
+  sequenceNumber: Schema.Number,
+  commandName: QualifiedName,
+});
+
+const FloatValue = Schema.Struct({
+  type: Schema.Literal("FLOAT"),
+  value: Schema.propertySignature(Schema.Number).pipe(
+    Schema.fromKey("floatValue"),
+  ),
+});
+
+const DoubleValue = Schema.Struct({
+  type: Schema.Literal("DOUBLE"),
+  value: Schema.propertySignature(Schema.Number).pipe(
+    Schema.fromKey("doubleValue"),
+  ),
+});
+
+const Sint32Value = Schema.Struct({
+  type: Schema.Literal("SINT32"),
+  value: Schema.propertySignature(Schema.Number).pipe(
+    Schema.fromKey("sint32Value"),
+  ),
+});
+
+const Uint32Value = Schema.Struct({
+  type: Schema.Literal("UINT32"),
+  value: Schema.propertySignature(Schema.Number).pipe(
+    Schema.fromKey("uint32Value"),
+  ),
+});
+
+const Sint64Value = Schema.Struct({
+  type: Schema.Literal("SINT64"),
+  value: Schema.propertySignature(Schema.Number).pipe(
+    Schema.fromKey("sint64Value"),
+  ),
+});
+
+const Uint64Value = Schema.Struct({
+  type: Schema.Literal("UINT64"),
+  value: Schema.propertySignature(Schema.Number).pipe(
+    Schema.fromKey("uint64Value"),
+  ),
+});
+
+const BinaryValue = Schema.Struct({
+  type: Schema.Literal("BINARY"),
+  value: Schema.propertySignature(Schema.Uint8ArrayFromBase64).pipe(
+    Schema.fromKey("binaryValue"),
+  ),
+});
+
+const StringValue = Schema.Struct({
+  type: Schema.Literal("STRING"),
+  value: Schema.propertySignature(Schema.String).pipe(
+    Schema.fromKey("stringValue"),
+  ),
+});
+
+const TimestampValue = Schema.Struct({
+  type: Schema.Literal("TIMESTAMP"),
+  value: Schema.propertySignature(Schema.DateFromString).pipe(
+    Schema.fromKey("stringValue"),
+  ),
+});
+
+const BooleanValue = Schema.Struct({
+  type: Schema.Literal("BOOLEAN"),
+  value: Schema.propertySignature(Schema.Boolean).pipe(
+    Schema.fromKey("booleanValue"),
+  ),
+});
+
+const EnumeratedValue = Schema.Struct({
+  type: Schema.Literal("ENUMERATED"),
+});
+
+const AggregateValue = Schema.Struct({
+  type: Schema.Literal("AGGREGATE"),
+});
+
+export const Value = Schema.Union(
+  FloatValue,
+  DoubleValue,
+  Sint32Value,
+  Uint32Value,
+  Sint64Value,
+  Uint64Value,
+  BinaryValue,
+  StringValue,
+  TimestampValue,
+  BooleanValue,
+  EnumeratedValue,
+  AggregateValue,
+);
+
+export const CommandHistoryAttribute = Schema.Struct({
+  name: Schema.String,
+  value: Value,
+});
+
+export const CommandAssignment = Schema.Struct({
+  name: Schema.String,
+  value: Value,
+  userInput: Schema.Boolean,
+});
+
+export const CommandHistoryEntry = Schema.Struct({
+  id: CommandId,
+  commandName: QualifiedName,
+
+  aliases: Schema.optional(
+    Schema.Record({ key: Schema.String, value: Schema.String }),
+  ),
+  origin: Schema.String,
+  sequenceNumber: Schema.Number,
+  commandId: CommandIdObject,
+  attr: Schema.Array(CommandHistoryAttribute),
+  generationTime: Schema.DateFromString,
+  assignments: Schema.Array(CommandAssignment),
+});
