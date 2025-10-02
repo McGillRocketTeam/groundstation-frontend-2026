@@ -10,15 +10,16 @@ export function TextCard(
   _props: IDockviewPanelProps<typeof TextCardConfiguration.Type>,
 ) {
   const result = useAtomValue(
-    YamcsClient.query("command", "listCommands", {
+    YamcsClient.query("link", "listLinks", {
       path: {
         instance: "mqtt-frames",
       },
-      reactivityKeys: ["yamcs-commands"],
+      reactivityKeys: ["yamcs-links"],
     }),
   );
 
-  const send = useAtomSet(YamcsClient.mutation("command", "issueCommand"));
+  const disable = useAtomSet(YamcsClient.mutation("link", "disableLink"));
+  const enable = useAtomSet(YamcsClient.mutation("link", "enableLink"));
 
   return (
     <div className="h-full w-full overflow-scroll p-2">
@@ -30,24 +31,40 @@ export function TextCard(
         ),
         onSuccess: ({ value }) => (
           <div>
-            <Button
-              onClick={() => {
-                send({
-                  path: {
-                    instance: "mqtt-frames",
-                    processor: "realtime",
-                    name: "myproject/SwitchVoltageOff",
-                  },
-                  payload: { args: { Battery: "1" }, comment: "Hello World" },
-                  reactivityKeys: ["yamcs-commands"],
-                });
-              }}
-            >
-              Test
-            </Button>
+            <div className="flex flex-row gap-2">
+              <Button
+                onClick={() => {
+                  disable({
+                    path: {
+                      instance: "mqtt-frames",
+                      link: "MQTT_FRAME_IN",
+                    },
+                    reactivityKeys: ["yamcs-links"],
+                  });
+                }}
+              >
+                Disable
+              </Button>
+
+              <Button
+                onClick={() => {
+                  enable({
+                    path: {
+                      instance: "mqtt-frames",
+                      link: "MQTT_FRAME_IN",
+                    },
+                    reactivityKeys: ["yamcs-links"],
+                  });
+                }}
+              >
+                Enable
+              </Button>
+            </div>
             <pre className="flex w-full flex-col">
-              {value.commands.map((c) => (
-                <div key={c.id}>{c.commandId.commandName}</div>
+              {value.links.map((c) => (
+                <div key={c.name}>
+                  {c.parentName} {c.name} {c.status}
+                </div>
               ))}
             </pre>
           </div>

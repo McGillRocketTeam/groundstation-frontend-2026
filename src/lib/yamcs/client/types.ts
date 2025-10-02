@@ -381,3 +381,26 @@ export const IssueCommandResponse = Schema.Struct({
   username: Schema.String,
   queue: Schema.String,
 });
+
+export const ActionInfo = Schema.Struct({
+  id: Schema.String,
+  label: Schema.String,
+  style: Schema.Literal("PUSH_BUTTON", "CHECK_BOX"),
+  enabled: Schema.Boolean,
+  checked: Schema.Boolean,
+});
+
+export const LinkInfo = Schema.Struct({
+  instance: Schema.String,
+  name: Schema.String,
+  type: Schema.String,
+  spec: Schema.optional(Schema.String),
+  disabled: Schema.Boolean,
+  status: Schema.String,
+  dataInCount: Schema.NumberFromString,
+  dataOutCount: Schema.NumberFromString,
+  detailedStatus: Schema.optional(Schema.String),
+  parentName: Schema.optional(Schema.String),
+  actions: Schema.optional(Schema.Array(ActionInfo)),
+  parameters: Schema.optional(Schema.Array(QualifiedName)),
+});

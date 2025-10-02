@@ -1,5 +1,9 @@
 import { AtomHttpApi, useAtomValue } from "@effect-atom/atom-react";
-import { FetchHttpClient, HttpClient } from "@effect/platform";
+import {
+  FetchHttpClient,
+  HttpClient,
+  HttpClientRequest,
+} from "@effect/platform";
 import { Effect, Schedule } from "effect";
 import { YamcsApi } from "./http";
 
@@ -12,6 +16,9 @@ export class YamcsClient extends AtomHttpApi.Tag<YamcsClient>()("YamcsClient", {
       HttpClient.withTracerDisabledWhen(() => true),
       HttpClient.tapRequest((req) =>
         Effect.logDebug(`[YAMCS HTTP]: ${req.url}`),
+      ),
+      HttpClient.mapRequest((req) =>
+        HttpClientRequest.setUrl(req.url.replaceAll("%3A", ":"))(req),
       ),
       HttpClient.retryTransient({
         times: 3,
