@@ -47,6 +47,7 @@ export function ParameterSelector({
           onValueChange={onValueChange}
           items={data.value.parameters as ParameterInfoType[]}
           itemToStringLabel={(item) => item.name}
+          autoHighlight
         >
           <ComboboxTrigger {...inputProps}>
             {!value && (
