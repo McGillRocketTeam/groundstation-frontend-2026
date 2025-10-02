@@ -4,10 +4,8 @@ import {
 } from "@base-ui-components/react";
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
 
-function Combobox<ItemValue, SelectedValue>(
-  props: React.ComponentProps<
-    typeof ComboboxPrimitive.Root<ItemValue, SelectedValue>
-  >,
+function Combobox<SelectedValue>(
+  props: React.ComponentProps<typeof ComboboxPrimitive.Root<SelectedValue>>,
 ) {
   return <ComboboxPrimitive.Root {...props} />;
 }

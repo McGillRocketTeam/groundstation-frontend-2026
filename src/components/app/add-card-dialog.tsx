@@ -118,9 +118,12 @@ export function AddCardDialog({
 
         <Combobox
           value={selectedSchemaKey}
-          onValueChange={setSelectedSchemaKey}
+          onValueChange={(value) =>
+            setSelectedSchemaKey(value as CardSchemaKey)
+          }
           items={cardSchemas}
           itemToStringLabel={itemToString}
+          autoHighlight
         >
           <ComboboxTrigger>
             <ComboboxValue />
