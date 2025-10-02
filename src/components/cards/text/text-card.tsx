@@ -1,5 +1,6 @@
+import { Button } from "@/components/ui/button";
 import { YamcsClient } from "@/lib/yamcs/client";
-import { Result, useAtomValue } from "@effect-atom/atom-react";
+import { Result, useAtomSet, useAtomValue } from "@effect-atom/atom-react";
 import type { IDockviewPanelProps } from "dockview-react";
 import { Cause } from "effect";
 import { TextCardConfiguration } from ".";
@@ -9,13 +10,15 @@ export function TextCard(
   _props: IDockviewPanelProps<typeof TextCardConfiguration.Type>,
 ) {
   const result = useAtomValue(
-    YamcsClient.query("command", "getCommand", {
+    YamcsClient.query("command", "listCommands", {
       path: {
         instance: "mqtt-frames",
-        id: "1759332369290-0:0:0:0:0:0:0:1-0",
       },
+      reactivityKeys: ["yamcs-commands"],
     }),
   );
+
+  const send = useAtomSet(YamcsClient.mutation("command", "issueCommand"));
 
   return (
     <div className="h-full w-full overflow-scroll p-2">
@@ -25,10 +28,29 @@ export function TextCard(
         onFailure: (fail) => (
           <pre className="whitespace-pre-wrap">{Cause.pretty(fail.cause)}</pre>
         ),
-        onSuccess: (data) => (
-          <pre className="flex w-full flex-col">
-            {JSON.stringify(data.value, null, 2)}
-          </pre>
+        onSuccess: ({ value }) => (
+          <div>
+            <Button
+              onClick={() => {
+                send({
+                  path: {
+                    instance: "mqtt-frames",
+                    processor: "realtime",
+                    name: "myproject/SwitchVoltageOff",
+                  },
+                  payload: { args: { Battery: "1" }, comment: "Hello World" },
+                  reactivityKeys: ["yamcs-commands"],
+                });
+              }}
+            >
+              Test
+            </Button>
+            <pre className="flex w-full flex-col">
+              {value.commands.map((c) => (
+                <div key={c.id}>{c.commandId.commandName}</div>
+              ))}
+            </pre>
+          </div>
         ),
       })}
       {/* </div> */}
