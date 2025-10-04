@@ -55,3 +55,5 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+
+export const dashboardList = Effect.runSync(getDashboardList);
