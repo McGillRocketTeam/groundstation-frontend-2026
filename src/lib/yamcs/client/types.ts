@@ -331,3 +331,76 @@ export const CommandHistoryEntry = Schema.Struct({
   generationTime: Schema.DateFromString,
   assignments: Schema.Array(CommandAssignment),
 });
+
+/**
+ * Represents a request to issue a command within the system.
+ */
+export const IssueCommandRequest = Schema.Struct({
+  /**
+   * The name/value assignments for this command.
+   */
+  args: Schema.optional(
+    Schema.Record({ key: Schema.String, value: Schema.Any }),
+  ),
+
+  /**
+   * The origin of the command. Typically a hostname.
+   */
+  origin: Schema.optional(Schema.String),
+
+  /**
+   * The sequence number as specified by the origin.
+   * This value is communicated back in command history and
+   * command queue entries, allowing clients to map
+   * local to remote command identities.
+   */
+  sequenceNumber: Schema.optional(Schema.Number),
+
+  /**
+   * Comment attached to this command.
+   */
+  comment: Schema.optional(Schema.String),
+
+  /**
+   * Override the stream on which the command should be sent out.
+   *
+   * Requires elevated privilege.
+   */
+  stream: Schema.optional(Schema.String),
+});
+
+export const IssueCommandResponse = Schema.Struct({
+  id: CommandId,
+  generationTime: Schema.DateFromString,
+  origin: Schema.String,
+  sequenceNumber: Schema.Number,
+  commandName: QualifiedName,
+  assignments: Schema.Array(CommandAssignment),
+  unprocessedBinary: Schema.Uint8ArrayFromBase64,
+  binary: Schema.Uint8ArrayFromBase64,
+  username: Schema.String,
+  queue: Schema.String,
+});
+
+export const ActionInfo = Schema.Struct({
+  id: Schema.String,
+  label: Schema.String,
+  style: Schema.Literal("PUSH_BUTTON", "CHECK_BOX"),
+  enabled: Schema.Boolean,
+  checked: Schema.Boolean,
+});
+
+export const LinkInfo = Schema.Struct({
+  instance: Schema.String,
+  name: Schema.String,
+  type: Schema.String,
+  spec: Schema.optional(Schema.String),
+  disabled: Schema.Boolean,
+  status: Schema.String,
+  dataInCount: Schema.NumberFromString,
+  dataOutCount: Schema.NumberFromString,
+  detailedStatus: Schema.optional(Schema.String),
+  parentName: Schema.optional(Schema.String),
+  actions: Schema.optional(Schema.Array(ActionInfo)),
+  parameters: Schema.optional(Schema.Array(QualifiedName)),
+});

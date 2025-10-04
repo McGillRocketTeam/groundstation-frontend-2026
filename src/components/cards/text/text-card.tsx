@@ -1,5 +1,6 @@
+import { Button } from "@/components/ui/button";
 import { YamcsClient } from "@/lib/yamcs/client";
-import { Result, useAtomValue } from "@effect-atom/atom-react";
+import { Result, useAtomSet, useAtomValue } from "@effect-atom/atom-react";
 import type { IDockviewPanelProps } from "dockview-react";
 import { Cause } from "effect";
 import { TextCardConfiguration } from ".";
@@ -9,13 +10,16 @@ export function TextCard(
   _props: IDockviewPanelProps<typeof TextCardConfiguration.Type>,
 ) {
   const result = useAtomValue(
-    YamcsClient.query("command", "getCommand", {
+    YamcsClient.query("link", "listLinks", {
       path: {
         instance: "mqtt-frames",
-        id: "1759332369290-0:0:0:0:0:0:0:1-0",
       },
+      reactivityKeys: ["yamcs-links"],
     }),
   );
+
+  const disable = useAtomSet(YamcsClient.mutation("link", "disableLink"));
+  const enable = useAtomSet(YamcsClient.mutation("link", "enableLink"));
 
   return (
     <div className="h-full w-full overflow-scroll p-2">
@@ -25,10 +29,45 @@ export function TextCard(
         onFailure: (fail) => (
           <pre className="whitespace-pre-wrap">{Cause.pretty(fail.cause)}</pre>
         ),
-        onSuccess: (data) => (
-          <pre className="flex w-full flex-col">
-            {JSON.stringify(data.value, null, 2)}
-          </pre>
+        onSuccess: ({ value }) => (
+          <div>
+            <div className="flex flex-row gap-2">
+              <Button
+                onClick={() => {
+                  disable({
+                    path: {
+                      instance: "mqtt-frames",
+                      link: "MQTT_FRAME_IN",
+                    },
+                    reactivityKeys: ["yamcs-links"],
+                  });
+                }}
+              >
+                Disable
+              </Button>
+
+              <Button
+                onClick={() => {
+                  enable({
+                    path: {
+                      instance: "mqtt-frames",
+                      link: "MQTT_FRAME_IN",
+                    },
+                    reactivityKeys: ["yamcs-links"],
+                  });
+                }}
+              >
+                Enable
+              </Button>
+            </div>
+            <pre className="flex w-full flex-col">
+              {value.links.map((c) => (
+                <div key={c.name}>
+                  {c.parentName} {c.name} {c.status}
+                </div>
+              ))}
+            </pre>
+          </div>
         ),
       })}
       {/* </div> */}
