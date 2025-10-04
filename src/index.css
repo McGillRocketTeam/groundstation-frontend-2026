@@ -43,8 +43,8 @@ html:is(.dark) {
   --border: var(--color-neutral-300);
   --ring: var(--color-neutral-950);
 
-  --muted: var(--color-neutral-300);
-  --muted-foreground: var(--color-neutral-400);
+  --muted: var(--color-neutral-200);
+  --muted-foreground: var(--color-neutral-500);
 
   --neutral: var(--color-neutral-700);
   --neutral-background: var(--color-neutral-100);
@@ -64,8 +64,8 @@ html:is(.dark) {
   --border: var(--color-neutral-700);
   --ring: var(--color-neutral-50);
 
-  --muted: var(--color-neutral-800);
-  --muted-foreground: var(--color-neutral-600);
+  --muted: var(--color-neutral-900);
+  --muted-foreground: var(--color-neutral-400);
 
   --neutral: var(--color-neutral-200);
   --neutral-background: var(--color-neutral-900);

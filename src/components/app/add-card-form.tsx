@@ -54,6 +54,7 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
               case "boolean":
                 return (
                   <FormField
+                    key={fieldKey}
                     defaultValue={false as any}
                     control={form.control}
                     name={fieldKey}
@@ -82,6 +83,7 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
               case "string":
                 return (
                   <FormField
+                    key={fieldKey}
                     control={form.control}
                     name={fieldKey}
                     render={({ field }) => (
@@ -101,6 +103,7 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
               case "custom(YAMCSParameterInfo)":
                 return (
                   <FormField
+                    key={fieldKey}
                     control={form.control}
                     name={fieldKey}
                     render={({ field }) => (
@@ -128,6 +131,7 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
               default:
                 return (
                   <FormField
+                    key={fieldKey}
                     control={form.control}
                     name={fieldKey}
                     render={({ field }) => (
