@@ -404,3 +404,124 @@ export const LinkInfo = Schema.Struct({
   actions: Schema.optional(Schema.Array(ActionInfo)),
   parameters: Schema.optional(Schema.Array(QualifiedName)),
 });
+
+export const AlarmRange = Schema.Struct({
+  minInclusive: Schema.Number,
+  maxInclusive: Schema.Number,
+  minExclusive: Schema.Number,
+  maxExclusive: Schema.Number,
+});
+
+export const RangeCondition = Schema.Literal("LOW", "HIGH");
+
+export const AcquisitionStatus = Schema.Literal(
+  "ACQUIRED",
+  "NOT_RECEIVED",
+  "INVALID",
+  "EXPIRED",
+);
+
+export const MonitoringResult = Schema.Literal(
+  "DISABLED",
+  "IN_LIMITS",
+  "WATCH",
+  "WARNING",
+  "DISTRESS",
+  "CRITICAL",
+  "SEVERE",
+);
+
+export const AlarmSeverity = Schema.Literal(
+  "WATCH",
+  "WARNING",
+  "DISTRESS",
+  "CRITICAL",
+  "SEVERE",
+);
+
+export const AlarmLevelType = AlarmSeverity;
+
+export const AlarmNotificationType = Schema.Literal(
+  "ACTIVE",
+  "TRIGGERED",
+  "SEVERITY_INCREASED",
+  "VALUE_UPDATED",
+  "ACKNOWLEDGED",
+  "CLEARED",
+  "RTN",
+  "SHELVED",
+  "UNSHELVED",
+  "RESET",
+  "TRIGGERED_PENDING",
+);
+
+export const AcknowledgeInfo = Schema.Struct({
+  acknowledgedBy: Schema.String,
+  acknowledgeMessage: Schema.optional(Schema.String),
+  acknowledgeTime: Schema.DateFromString,
+});
+
+export const ShelveInfo = Schema.Struct({
+  shelvedBy: Schema.String,
+  shelveMessage: Schema.optional(Schema.String),
+  shelveTime: Schema.DateFromString,
+  shelveExpiration: Schema.optional(Schema.String),
+});
+
+export const ClearInfo = Schema.Struct({
+  clearedBy: Schema.String,
+  clearTime: Schema.DateFromString,
+  clearMessage: Schema.optional(Schema.String),
+});
+
+const baseAlarmFields = Schema.Struct({
+  triggerTime: Schema.DateFromString,
+  id: NamedObjectId,
+  seqNum: Schema.Number,
+  severity: AlarmSeverity,
+  violations: Schema.Number,
+  count: Schema.Number,
+  acknowledgeInfo: Schema.optional(AcknowledgeInfo),
+  notificationType: Schema.optional(AlarmNotificationType),
+  latching: Schema.optional(Schema.Boolean),
+  processOK: Schema.optional(Schema.Boolean),
+  triggered: Schema.optional(Schema.Boolean),
+  acknowledged: Schema.optional(Schema.Boolean),
+  shelveInfo: Schema.optional(ShelveInfo),
+  clearInfo: Schema.optional(ClearInfo),
+  updateTime: Schema.DateFromString,
+  pending: Schema.optional(Schema.Literal(true)),
+});
+
+export const ParameterValue = Schema.Struct({
+  id: NamedObjectId,
+  rawValue: Value,
+  engValue: Value,
+  acquisitionTime: Schema.DateFromString,
+  generationTime: Schema.DateFromString,
+  acquisitionStatus: AcquisitionStatus,
+  monitoringResult: MonitoringResult,
+  rangeCondition: RangeCondition,
+  alarmRange: Schema.optional(Schema.Array(AlarmRange)),
+  exireMilis: Schema.optional(Schema.NumberFromString),
+});
+
+export const ParameterAlarmData = Schema.Struct({
+  triggerValue: ParameterValue,
+  mostSevereValue: Schema.optional(ParameterValue),
+  currentValue: Schema.optional(ParameterValue),
+  parameter: Schema.optional(ParameterInfo),
+});
+
+export const ParameterAlarm = Schema.Struct({
+  type: Schema.Literal("PARAMETER"),
+  ...baseAlarmFields.fields,
+  parameterDetail: ParameterAlarmData,
+});
+
+export const EventAlarm = Schema.Struct({
+  type: Schema.Literal("EVENT"),
+  ...baseAlarmFields.fields,
+});
+
+export const AlarmData = Schema.Union(ParameterAlarm, EventAlarm);

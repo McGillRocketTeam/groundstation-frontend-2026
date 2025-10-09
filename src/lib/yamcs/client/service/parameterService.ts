@@ -1,51 +1,76 @@
 import { Atom } from "@effect-atom/atom-react";
-import { Effect, Layer, Logger } from "effect";
+import { Array, Effect, HashMap, Layer, Logger } from "effect";
 import { YamcsClient } from "..";
-import { ParameterInfo } from "../types";
+import { ParameterInfo, QualifiedName } from "../types";
+
+type ParameterEntry = {
+  info: typeof ParameterInfo.Type;
+  value: any;
+};
 
 class ParameterService extends Effect.Service<ParameterService>()(
-	"ParameterService",
-	{
-		dependencies: [YamcsClient.layer],
-		scoped: Effect.gen(function*() {
-			const httpClient = yield* YamcsClient;
-			const paramList = yield* httpClient.mdb.listParameters({
-				path: { instance: "mqtt-frames" },
-				urlParams: {},
-			});
+  "ParameterService",
+  {
+    dependencies: [YamcsClient.layer],
+    scoped: Effect.gen(function* () {
+      const httpClient = yield* YamcsClient;
 
-			const parameters: Map<string, typeof ParameterInfo.Type> = new Map();
+      const parameterInfoMap: HashMap.HashMap<
+        QualifiedName,
+        ParameterEntry["value"]
+      > = HashMap.empty();
+      // const parameterValueMap: HashMap.HashMap<QualifiedName, ParameterEntry["value"]> = HashMap.empty();
 
-			paramList.parameters.forEach((parameter) => {
-				parameters.set(parameter.qualifiedName, parameter);
-			});
+      // Intialize the info list, this data shouldn't change much
+      // so we fetch it once when the service is started
+      const paramList = yield* httpClient.mdb.listParameters({
+        path: { instance: "mqtt-frames" },
+        urlParams: {},
+      });
+      paramList.parameters.forEach((parameter) => {
+        parameterInfoMap.pipe(HashMap.set(parameter.qualifiedName, parameter));
+      });
 
-			const list = Effect.sync(() => Array.from(parameters.values()));
-			const getById = (id: string) => Effect.sync(() => parameters.get(id)).pipe(Effect.scoped);
+      // @effect-diagnostics-next-line disable
+      // const getEntry: (qualifiedName: QualifiedName) => ParameterEntry = (qualifiedName) => {
+      // 	return {
+      // 		info: parameterInfoMap.pipe(HashMap.get(qualifiedName)),
+      // 		value: parameterValueMap.pipe(HashMap.get(qualifiedName))
+      // 	}
+      // }
 
-			return { list, getById } as const;
-		}),
-	},
-) { }
+      const list = Effect.sync(() =>
+        Array.fromIterable(parameterInfoMap.pipe(HashMap.values)),
+      );
+      // const getById = (id: QualifiedName) => Effect.gen(function*() {
+      // 	// return getEntry(id)
+      // });
 
-export const parameterRuntime = Atom.runtime(Layer.mergeAll(ParameterService.Default, Logger.pretty));
+      return { list } as const;
+    }),
+  },
+) {}
+
+export const parameterRuntime = Atom.runtime(
+  Layer.mergeAll(ParameterService.Default, Logger.pretty),
+);
 
 export const parametersAtom = parameterRuntime
-	.atom(
-		Effect.gen(function*() {
-			const p = yield* ParameterService;
-			return yield* p.list;
-		}),
-	)
-	.pipe(Atom.withReactivity(["parameters"]));
+  .atom(
+    Effect.gen(function* () {
+      const p = yield* ParameterService;
+      return yield* p.list;
+    }),
+  )
+  .pipe(Atom.withReactivity(["parameters"]));
 
-export const parameterAtom = Atom.family((id: string) =>
-	parameterRuntime
-		.atom(
-			Effect.gen(function*() {
-				const p = yield* ParameterService;
-				return yield* p.getById(id);
-			}),
-		)
-		.pipe(Atom.withReactivity(["parameters"])),
-);
+// export const parameterAtom = Atom.family((id: string) =>
+// 	parameterRuntime
+// 		.atom(
+// 			Effect.gen(function*() {
+// 				const p = yield* ParameterService;
+// 				return yield* p.getById(id);
+// 			}),
+// 		)
+// 		.pipe(Atom.withReactivity(["parameters"])),
+// );
