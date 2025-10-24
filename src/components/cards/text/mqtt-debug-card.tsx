@@ -19,13 +19,10 @@ export function MqttDebugCard(
     const mqttClient = mqtt.connect(brokerUrl);
 
     mqttClient.on("connect", () => {
-      console.log("✅ Connected to MQTT broker");
       setIsConnected(true);
 
-      // Subscribe to all topics; use "yamcs-tm/#" if you only want telemetry
-      mqttClient.subscribe("#", (err) => {
-        if (err) console.error("Subscription error:", err);
-      });
+      // Subscribe to all topics
+      mqttClient.subscribe("#");
     });
 
     mqttClient.on("message", (topic, payload) => {
@@ -40,7 +37,7 @@ export function MqttDebugCard(
       }
 
       // Add metadata
-      data = { value: data, meta: { topic, time: new Date().toISOString() } };
+      data = { value: data, meta: { topic, time: new Date().toLocaleString() } };
 
       // Build nested tree structure from topic path
       setTreeData((prev) => {
@@ -94,7 +91,7 @@ export function MqttDebugCard(
 
       {isConnected && (
         <div className="font-mono text-sm">
-          <JSONTree data={treeData} hideRoot theme="bright" />
+          <JSONTree data={treeData} hideRoot theme="ashes"/>
         </div>
       )}
     </div>
