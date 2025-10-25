@@ -3,11 +3,13 @@ import { connectionStatusAtom } from "@/lib/atoms/connection-status";
 import { yamcsWebsocketAtom } from "@/lib/atoms/yamcs";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { Outlet } from "react-router";
+import { MapCard } from "@/components/cards/text";
 
 export function SharedLayout() {
   useAtomValue(yamcsWebsocketAtom);
   return (
     <div className="flex h-full flex-col">
+      <MapCard />
       <div className="flex flex-row items-center justify-between border-b p-3">
         <div>
           <div className="text-mrt-red text-sm uppercase">
