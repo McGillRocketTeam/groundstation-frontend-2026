@@ -23,7 +23,6 @@
     "dockview": "^4.7.1",
     "dockview-react": "^4.7.1",
     "effect": "^3.17.13",
-    "effect-ts": "link:@hookform/resolvers/effect-ts",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-hook-form": "^7.63.0",
