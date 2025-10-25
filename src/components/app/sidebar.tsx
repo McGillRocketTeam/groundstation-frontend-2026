@@ -7,7 +7,7 @@ export function Sidebar() {
   return (
     <aside className="h-full w-45 border-r p-3">
       <div className="mb-2 flex items-center py-2">
-        <span className="mr-2 box-border border-1 px-2 py-1">Dashboards</span>
+        <span className="mr-2 px-2 py-1">Dashboards</span>
         <AddCardDialog
           trigger={
             <Button size="sm" variant="outline">
@@ -19,7 +19,7 @@ export function Sidebar() {
       <nav className="ml-2 flex flex-1 flex-col overflow-auto">
         {dashboardList.map((dashboard) => (
           <Link
-            className="px-3 py-1 hover:bg-[#221809]"
+            className="hover:bg-muted px-3 py-1"
             key={dashboard.slug}
             to={dashboard.slug}
           >
@@ -30,7 +30,7 @@ export function Sidebar() {
       <div className="mt-auto flex w-full justify-center py-3">
         <Link
           to="/settings"
-          className="w-full px-3 py-1 text-left text-[#FE9A00] hover:bg-[#221809]"
+          className="text-primary hover:bg-muted w-full px-3 py-1 text-left"
         >
           Settings
         </Link>
