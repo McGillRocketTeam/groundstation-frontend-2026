@@ -1,12 +1,18 @@
 import Map, { Marker, NavigationControl } from "@vis.gl/react-maplibre";
+import type { IDockviewPanelProps } from "dockview";
 import maplibregl from "maplibre-gl";
 import { useMemo } from "react";
+import type { MapCardConfiguration } from ".";
 
-const MapCard = () => {
+export const MapCard = (
+  props: IDockviewPanelProps<typeof MapCardConfiguration.Type>,
+) => {
   const initialViewState = useMemo(
     () => ({
-      longitude: -73.6,
-      latitude: 45.5,
+      longitude: props.params.long,
+      latitude: props.params.lat,
+      trackerLongitude: props.params.trackerLong,
+      trackerLatitude: props.params.trackerLat,
       zoom: 10,
     }),
     [],
@@ -31,5 +37,3 @@ const MapCard = () => {
     </div>
   );
 };
-
-export default MapCard;

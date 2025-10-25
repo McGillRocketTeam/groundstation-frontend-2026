@@ -1,8 +1,10 @@
+import { MapCard, MapCardConfiguration } from "@/components/cards/map";
 import { TextCard, TextCardConfiguration } from "@/components/cards/text";
 
 // Match cards with their schemas
 export const cardSchemaMap = {
   TextCard: TextCardConfiguration, // <-- Effect schema
+  MapCard: MapCardConfiguration,
 };
 type CardSchemaMap = typeof cardSchemaMap;
 type CardSchemaValues = CardSchemaMap[keyof CardSchemaMap];
@@ -13,4 +15,5 @@ export type CardConfigurationUnion = CardSchemaValues["Type"];
 // Match cards with their React components
 export const cardComponentMap = {
   TextCard: TextCard,
+  MapCard: MapCard,
 };

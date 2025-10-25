@@ -1,4 +1,3 @@
-import MapCard from "@/components/cards/map/map-card";
 import { Badge } from "@/components/ui/badge";
 import { connectionStatusAtom } from "@/lib/atoms/connection-status";
 import { yamcsWebsocketAtom } from "@/lib/atoms/yamcs";
@@ -9,7 +8,6 @@ export function SharedLayout() {
   useAtomValue(yamcsWebsocketAtom);
   return (
     <div className="flex h-full flex-col">
-      <MapCard />
       <div className="flex flex-row items-center justify-between border-b p-3">
         <div>
           <div className="text-mrt-red text-sm uppercase">
