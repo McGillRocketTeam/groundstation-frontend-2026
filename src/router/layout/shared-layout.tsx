@@ -3,7 +3,7 @@ import { connectionStatusAtom } from "@/lib/atoms/connection-status";
 import { yamcsWebsocketAtom } from "@/lib/atoms/yamcs";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { Outlet } from "react-router";
-import MapCard from "@/components/cards/text/map-card";
+import MapCard from "@/components/cards/map/map-card";
 
 export function SharedLayout() {
   useAtomValue(yamcsWebsocketAtom);

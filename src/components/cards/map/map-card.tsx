@@ -14,7 +14,7 @@ const MapCard = () => {
   const mapStyleUrl = 'https://api.maptiler.com/maps/streets/style.json?key=T3tvaasfaJA1424bXIt6'
 
   return (
-    <div style={{ width: '100%', height: 400 }}>
+    <div style={{ width: '100%', height: '100%' }}>
       <Map
         mapLib={maplibregl}
         initialViewState={initialViewState}
