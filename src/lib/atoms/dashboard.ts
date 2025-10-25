@@ -2,7 +2,7 @@ import { Atom, useAtom } from "@effect-atom/atom-react";
 import { BrowserKeyValueStore } from "@effect/platform-browser";
 import { Schema } from "effect";
 
-import defaultLayout from "@/../public/default-layout.json";
+import defaultLayout from "@/../src/default-layout.json";
 
 export const DashboardSlug = Schema.String.pipe(Schema.brand("DashboardSlug"));
 export type DashboardSlug = typeof DashboardSlug.Type;
