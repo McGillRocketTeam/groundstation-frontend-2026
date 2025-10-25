@@ -19,9 +19,9 @@ export function SharedLayout() {
 
         <ConnectionStatus />
       </div>
-      <div className="flex flex-1 flex-row h-full px-2">
+      <div className="flex h-full flex-1 flex-row px-2">
         <Sidebar />
-        <div className="flex-1 h-full">
+        <div className="h-full flex-1">
           <Outlet />
         </div>
       </div>
