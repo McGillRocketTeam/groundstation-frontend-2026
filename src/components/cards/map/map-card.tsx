@@ -1,7 +1,7 @@
 import Map, { Marker, NavigationControl } from "@vis.gl/react-maplibre";
-import "maplibre-gl/dist/maplibre-gl.css";
 import type { IDockviewPanelProps } from "dockview";
 import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { useMemo } from "react";
 import type { MapCardConfiguration } from ".";
 
@@ -69,9 +69,14 @@ export const MapCard = (
       >
         <NavigationControl position="top-left" />
         {/* only render the marker when both coords are present */}
-        {typeof markerLongitude === "number" && typeof markerLatitude === "number" && (
-          <Marker longitude={markerLongitude} latitude={markerLatitude} color="red" />
-        )}
+        {typeof markerLongitude === "number" &&
+          typeof markerLatitude === "number" && (
+            <Marker
+              longitude={markerLongitude}
+              latitude={markerLatitude}
+              color="red"
+            />
+          )}
       </Map>
     </div>
   );
