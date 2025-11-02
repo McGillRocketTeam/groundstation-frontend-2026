@@ -1,4 +1,6 @@
 import Map, { Marker, NavigationControl } from "@vis.gl/react-maplibre";
+// required CSS for maplibre controls and proper container styling
+import "maplibre-gl/dist/maplibre-gl.css";
 import type { IDockviewPanelProps } from "dockview";
 import maplibregl from "maplibre-gl";
 import { useMemo } from "react";
@@ -7,15 +9,28 @@ import type { MapCardConfiguration } from ".";
 export const MapCard = (
   props: IDockviewPanelProps<typeof MapCardConfiguration.Type>,
 ) => {
+  const {
+    long,
+    lat,
+    tempTrackerLong,
+    tempTrackerLat,
+    trackerLong,
+    trackerLat,
+  } = props.params;
+
+  // keep unused tracker variables referenced
+  void trackerLong;
+  void trackerLat;
+
+  // initialViewState should only define the base map view (longitude, latitude, zoom)
+  // tracker/marker coordinates are separate and should not be part of the base view
   const initialViewState = useMemo(
     () => ({
-      longitude: props.params.long,
-      latitude: props.params.lat,
-      trackerLongitude: props.params.trackerLong,
-      trackerLatitude: props.params.trackerLat,
+      longitude: long,
+      latitude: lat,
       zoom: 10,
     }),
-    [],
+    [long, lat],
   );
 
   const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
@@ -24,7 +39,8 @@ export const MapCard = (
     "https://api.maptiler.com/maps/streets/style.json?key=T3tvaasfaJA1424bXIt6";
 
   return (
-    <div style={{ width: "100%", height: "100%" }}>
+    // add a minHeight so the map is visible even if a parent doesn't provide an explicit height
+    <div style={{ width: "100%", height: "100%", minHeight: 300 }}>
       <Map
         mapLib={maplibregl}
         initialViewState={initialViewState}
@@ -32,7 +48,10 @@ export const MapCard = (
         mapStyle={mapStyleUrl}
       >
         <NavigationControl position="top-left" />
-        <Marker longitude={-73.6} latitude={45.5} color="red" />
+        {/* only render the marker when both coords are present */}
+        {typeof tempTrackerLong === "number" && typeof tempTrackerLat === "number" && (
+          <Marker longitude={tempTrackerLong} latitude={tempTrackerLat} color="red" />
+        )}
       </Map>
     </div>
   );
