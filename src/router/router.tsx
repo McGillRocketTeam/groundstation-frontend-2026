@@ -8,7 +8,7 @@ import { DashboardPage } from "./pages/dashboard";
 import { RootErrorBoundary } from "./pages/error";
 import { SettingsPage } from "./pages/settings";
 
-import defaultLayout from "@/../public/default-layout.json";
+import defaultLayout from "@/../src/default-layout.json";
 
 const getDashboardList = Effect.gen(function* () {
   const kv = yield* KeyValueStore.KeyValueStore;
@@ -55,3 +55,5 @@ export const router = createBrowserRouter([
     ],
   },
 ]);
+
+export const dashboardList = Effect.runSync(getDashboardList);

@@ -1,3 +1,4 @@
+import { Sidebar } from "@/components/app/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { connectionStatusAtom } from "@/lib/atoms/connection-status";
 import { yamcsWebsocketAtom } from "@/lib/atoms/yamcs";
@@ -18,8 +19,11 @@ export function SharedLayout() {
 
         <ConnectionStatus />
       </div>
-      <div className="flex-1">
-        <Outlet />
+      <div className="flex h-full flex-1 flex-row px-2">
+        <Sidebar />
+        <div className="h-full flex-1">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
