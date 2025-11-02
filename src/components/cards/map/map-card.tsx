@@ -1,5 +1,4 @@
 import Map, { Marker, NavigationControl } from "@vis.gl/react-maplibre";
-// required CSS for maplibre controls and proper container styling
 import "maplibre-gl/dist/maplibre-gl.css";
 import type { IDockviewPanelProps } from "dockview";
 import maplibregl from "maplibre-gl";
@@ -22,15 +21,36 @@ export const MapCard = (
   void trackerLong;
   void trackerLat;
 
+  // normalize numeric params: inputs may be strings from saved configs or the form
+  const toNumber = (v: any) => {
+    if (typeof v === "number") return v;
+    if (typeof v === "string") {
+      const n = parseFloat(v);
+      return Number.isFinite(n) ? n : undefined;
+    }
+    return undefined;
+  };
+
+  const longitude = toNumber(long);
+  const latitude = toNumber(lat);
+  const markerLongitude = toNumber(tempTrackerLong);
+  const markerLatitude = toNumber(tempTrackerLat);
+
+  // debug: log parsed values to help trace why the map centers incorrectly
+  // (leave as console.debug so it doesn't clutter production logs)
+  console.debug("MapCard params parsed:", {
+    raw: { long, lat, tempTrackerLong, tempTrackerLat },
+    parsed: { longitude, latitude, markerLongitude, markerLatitude },
+  });
   // initialViewState should only define the base map view (longitude, latitude, zoom)
   // tracker/marker coordinates are separate and should not be part of the base view
   const initialViewState = useMemo(
     () => ({
-      longitude: long,
-      latitude: lat,
+      longitude: longitude ?? 0,
+      latitude: latitude ?? 0,
       zoom: 10,
     }),
-    [long, lat],
+    [longitude, latitude],
   );
 
   const containerStyle = useMemo(() => ({ width: "100%", height: "100%" }), []);
@@ -49,8 +69,8 @@ export const MapCard = (
       >
         <NavigationControl position="top-left" />
         {/* only render the marker when both coords are present */}
-        {typeof tempTrackerLong === "number" && typeof tempTrackerLat === "number" && (
-          <Marker longitude={tempTrackerLong} latitude={tempTrackerLat} color="red" />
+        {typeof markerLongitude === "number" && typeof markerLatitude === "number" && (
+          <Marker longitude={markerLongitude} latitude={markerLatitude} color="red" />
         )}
       </Map>
     </div>
