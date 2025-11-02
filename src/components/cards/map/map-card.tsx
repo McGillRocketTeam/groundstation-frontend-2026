@@ -1,8 +1,8 @@
 import Map, { Marker, NavigationControl } from "@vis.gl/react-maplibre";
 // required CSS for maplibre controls and proper container styling
-import "maplibre-gl/dist/maplibre-gl.css";
 import type { IDockviewPanelProps } from "dockview";
 import maplibregl from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { useMemo } from "react";
 import type { MapCardConfiguration } from ".";
 
@@ -49,9 +49,14 @@ export const MapCard = (
       >
         <NavigationControl position="top-left" />
         {/* only render the marker when both coords are present */}
-        {typeof tempTrackerLong === "number" && typeof tempTrackerLat === "number" && (
-          <Marker longitude={tempTrackerLong} latitude={tempTrackerLat} color="red" />
-        )}
+        {typeof tempTrackerLong === "number" &&
+          typeof tempTrackerLat === "number" && (
+            <Marker
+              longitude={tempTrackerLong}
+              latitude={tempTrackerLat}
+              color="red"
+            />
+          )}
       </Map>
     </div>
   );

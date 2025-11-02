@@ -91,12 +91,19 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
                         </FormLabel>
                         <FormControl
                           {...field}
-                          render={(fieldControl) => <Input
-                            {...fieldControl}
-                            value={field.value}
-                            onChange={(e) => {
-                              form.setValue(fieldKey, e.target.valueAsNumber as any)
-                            }} type="number" />}
+                          render={(fieldControl) => (
+                            <Input
+                              {...fieldControl}
+                              value={field.value}
+                              onChange={(e) => {
+                                form.setValue(
+                                  fieldKey,
+                                  e.target.valueAsNumber as any,
+                                );
+                              }}
+                              type="number"
+                            />
+                          )}
                         />
                         <FormMessage />
                       </FormItem>
