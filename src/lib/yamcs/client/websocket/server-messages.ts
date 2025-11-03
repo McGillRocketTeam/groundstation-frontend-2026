@@ -1,5 +1,5 @@
 import { Schema } from "effect";
-import { LinkInfo } from "../types";
+import { LinkInfo, StreamingCommandHisotryEntry } from "../types";
 
 export const SubscriptionId = Schema.NonNegativeInt.pipe(
   Schema.brand("SubscriptionId"),
@@ -61,6 +61,13 @@ export const LinkEvent = Schema.Struct({
   data: Schema.Struct({
     links: Schema.Array(LinkInfo),
   }),
+});
+
+export const CommandHistoryEvent = Schema.Struct({
+  type: Schema.Literal("commands"),
+  call: SubscriptionId,
+  seq: Schema.NonNegativeInt,
+  data: StreamingCommandHisotryEntry,
 });
 
 export const Events = Schema.Union(Update);

@@ -332,6 +332,21 @@ export const CommandHistoryEntry = Schema.Struct({
   assignments: Schema.Array(CommandAssignment),
 });
 
+export const StreamingCommandHisotryEntry = Schema.Struct({
+  id: CommandId,
+  commandName: QualifiedName,
+
+  aliases: Schema.optional(
+    Schema.Record({ key: Schema.String, value: Schema.String }),
+  ),
+  origin: Schema.String,
+  sequenceNumber: Schema.optional(Schema.Number),
+  commandId: CommandIdObject,
+  attr: Schema.Array(CommandHistoryAttribute),
+  generationTime: Schema.DateFromString,
+  assignments: Schema.optional(Schema.Array(CommandAssignment)),
+});
+
 /**
  * Represents a request to issue a command within the system.
  */

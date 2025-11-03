@@ -3,11 +3,13 @@ import { Atom } from "@effect-atom/atom-react";
 import { Chunk, Effect, Logger, Schema, Stream, StreamEmit } from "effect";
 import {
   Cancel,
+  SubscribeCommandsRequest,
   SubscribeLinksRequest,
   SubscribeTimeRequest,
   type SubscriptionRequest,
 } from "./client-messages";
 import {
+  CommandHistoryEvent,
   Events,
   LinkEvent,
   Reply,
@@ -180,6 +182,28 @@ export const linksSubscriptionAtom = yamcsRuntime.atom(
       return stream.pipe(
         Stream.mapEffect((m) => Schema.decodeUnknown(LinkEvent)(m)),
         Stream.map((m) => m.data.links),
+        Stream.ensuring(ws.unsubscribe(call)),
+      );
+    }),
+  ),
+);
+
+export const commandsSubscriptionAtom = yamcsRuntime.atom(
+  Stream.unwrap(
+    Effect.gen(function* () {
+      const ws = yield* WebSocketClient;
+
+      const { call, stream } = yield* ws.subscribe(
+        SubscribeCommandsRequest.make({
+          instance: "mqtt-frames",
+          processor: "realtime",
+        }),
+      );
+
+      return stream.pipe(
+        Stream.mapEffect((m) => Schema.decodeUnknown(CommandHistoryEvent)(m)),
+        Stream.map((m) => m.data),
+        Stream.accumulate,
         Stream.ensuring(ws.unsubscribe(call)),
       );
     }),

@@ -21,7 +21,14 @@ export const SubscribeLinksRequest = Schema.TaggedStruct("links", {
   instance: Schema.String,
 });
 
+export const SubscribeCommandsRequest = Schema.TaggedStruct("commands", {
+  instance: Schema.String,
+  processor: Schema.String,
+  ingorePastCommands: Schema.optional(Schema.Boolean),
+});
+
 export const SubscriptionRequest = Schema.Union(
   SubscribeTimeRequest,
   SubscribeLinksRequest,
+  SubscribeCommandsRequest,
 );
