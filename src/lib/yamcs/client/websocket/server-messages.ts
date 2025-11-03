@@ -1,5 +1,10 @@
 import { Schema } from "effect";
-import { LinkInfo, StreamingCommandHisotryEntry } from "../types";
+import {
+  LinkInfo,
+  NamedObjectId,
+  StreamingCommandHisotryEntry,
+  Value,
+} from "../types";
 
 export const SubscriptionId = Schema.NonNegativeInt.pipe(
   Schema.brand("SubscriptionId"),
@@ -69,6 +74,29 @@ export const CommandHistoryEvent = Schema.Struct({
   seq: Schema.NonNegativeInt,
   data: StreamingCommandHisotryEntry,
 });
+
+export const ParameterValue = Schema.Struct({
+  // id: NamedObjectId,
+  rawValue: Value,
+  engValue: Value,
+  acquisitionTime: Schema.DateFromString,
+  generationTime: Schema.DateFromString, // RFC 3339 timestamp
+  numericId: Schema.Number,
+});
+
+export const PrameterDataEvent = Schema.Struct({
+  values: Schema.Array(ParameterValue),
+});
+
+export const ParmeterInfoEvent = Schema.Struct({
+  mapping: Schema.Record({ key: Schema.String, value: NamedObjectId }),
+  // info: Schema.Record({ key: Schema.Number, value: ParameterInfo }),
+});
+
+export const ParameterEvent = Schema.Union(
+  ParmeterInfoEvent,
+  PrameterDataEvent,
+);
 
 export const Events = Schema.Union(Update);
 

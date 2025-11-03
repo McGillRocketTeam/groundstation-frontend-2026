@@ -1,4 +1,5 @@
 import { Schema } from "effect";
+import { NamedObjectId } from "../types";
 
 /*     Built-in Client Messages     */
 export const Cancel = Schema.Struct({
@@ -27,8 +28,15 @@ export const SubscribeCommandsRequest = Schema.TaggedStruct("commands", {
   ingorePastCommands: Schema.optional(Schema.Boolean),
 });
 
+export const SubscribeParameterRequest = Schema.TaggedStruct("parameters", {
+  instance: Schema.String,
+  processor: Schema.String,
+  id: Schema.Array(NamedObjectId),
+});
+
 export const SubscriptionRequest = Schema.Union(
   SubscribeTimeRequest,
   SubscribeLinksRequest,
   SubscribeCommandsRequest,
+  SubscribeParameterRequest,
 );

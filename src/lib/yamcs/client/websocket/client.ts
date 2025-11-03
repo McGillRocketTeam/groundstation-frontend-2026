@@ -1,10 +1,12 @@
 import { connectionStatusAtom } from "@/lib/atoms/connection-status";
 import { Atom } from "@effect-atom/atom-react";
 import { Chunk, Effect, Logger, Schema, Stream, StreamEmit } from "effect";
+import type { QualifiedName } from "../types";
 import {
   Cancel,
   SubscribeCommandsRequest,
   SubscribeLinksRequest,
+  SubscribeParameterRequest,
   SubscribeTimeRequest,
   type SubscriptionRequest,
 } from "./client-messages";
@@ -12,6 +14,7 @@ import {
   CommandHistoryEvent,
   Events,
   LinkEvent,
+  ParameterEvent,
   Reply,
   Messages as ServerMessages,
   SubscriptionId,
@@ -208,6 +211,53 @@ export const commandsSubscriptionAtom = yamcsRuntime.atom(
       );
     }),
   ),
+);
+
+export const parameterSubscriptionAtom = Atom.family(
+  (qualifiedName: QualifiedName) =>
+    yamcsRuntime.atom(
+      Stream.unwrap(
+        Effect.gen(function* () {
+          const ws = yield* WebSocketClient;
+
+          const { call, stream } = yield* ws.subscribe(
+            SubscribeParameterRequest.make({
+              instance: "mqtt-frames",
+              processor: "realtime",
+              id: [{ name: qualifiedName }],
+            }),
+          );
+
+          const eventStream = stream.pipe(
+            Stream.map((m) => m.data),
+            Stream.mapEffect((m) => Schema.decodeUnknown(ParameterEvent)(m)),
+          );
+
+          // Store the mapping
+          const mapping = Chunk.toReadonlyArray(
+            yield* eventStream.pipe(
+              Stream.filter((e) => "mapping" in e),
+              Stream.take(1),
+              Stream.runCollect,
+            ),
+          )[0].mapping;
+
+          return eventStream.pipe(
+            Stream.filter((e) => "values" in e),
+            Stream.map(({ values }) =>
+              Object.fromEntries(
+                values.map((v) => {
+                  const key = mapping[v.numericId]?.name;
+                  return [key, v];
+                }),
+              ),
+            ),
+            Stream.map((a) => a[qualifiedName]),
+            Stream.ensuring(ws.unsubscribe(call)),
+          );
+        }),
+      ),
+    ),
 );
 
 export const websocketAtom = Atom.family(
