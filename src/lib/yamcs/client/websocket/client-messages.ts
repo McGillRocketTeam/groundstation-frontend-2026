@@ -16,3 +16,12 @@ export const SubscribeTimeRequest = Schema.TaggedStruct("time", {
   instance: Schema.String,
   processor: Schema.String,
 });
+
+export const SubscribeLinksRequest = Schema.TaggedStruct("links", {
+  instance: Schema.String,
+});
+
+export const SubscriptionRequest = Schema.Union(
+  SubscribeTimeRequest,
+  SubscribeLinksRequest,
+);

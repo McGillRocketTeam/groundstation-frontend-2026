@@ -1,4 +1,5 @@
 import { Schema } from "effect";
+import { LinkInfo } from "../types";
 
 export const SubscriptionId = Schema.NonNegativeInt.pipe(
   Schema.brand("SubscriptionId"),
@@ -13,7 +14,6 @@ export const Reply = Schema.Struct({
   // seq: Schema.NonNegativeInt,
   data: Schema.Struct({
     replyTo: Schema.optional(SubscriptionId),
-    "@type": Schema.Literal("/yamcs.api.Reply"),
     exception: Schema.optional(
       Schema.Struct({
         code: Schema.NonNegativeInt,
@@ -39,10 +39,28 @@ export const State = Schema.Struct({
 
 /*     Event Server Messages     */
 export const Update = Schema.Struct({
-  type: Schema.Literal("time", "links"),
+  type: Schema.String,
   call: SubscriptionId,
   seq: Schema.NonNegativeInt,
   data: Schema.Unknown,
+});
+
+export const TimeEvent = Schema.Struct({
+  type: Schema.Literal("time"),
+  call: SubscriptionId,
+  seq: Schema.NonNegativeInt,
+  data: Schema.Struct({
+    value: Schema.DateFromString,
+  }),
+});
+
+export const LinkEvent = Schema.Struct({
+  type: Schema.Literal("links"),
+  call: SubscriptionId,
+  seq: Schema.NonNegativeInt,
+  data: Schema.Struct({
+    links: Schema.Array(LinkInfo),
+  }),
 });
 
 export const Events = Schema.Union(Update);
