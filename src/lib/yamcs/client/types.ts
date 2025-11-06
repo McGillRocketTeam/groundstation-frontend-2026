@@ -283,11 +283,11 @@ const BooleanValue = Schema.Struct({
   ),
 });
 
-const EnumeratedValue = Schema.Struct({
+export const EnumeratedValue = Schema.Struct({
   type: Schema.Literal("ENUMERATED"),
 });
 
-const AggregateValue = Schema.Struct({
+export const AggregateValue = Schema.Struct({
   type: Schema.Literal("AGGREGATE"),
 });
 
@@ -302,8 +302,8 @@ export const Value = Schema.Union(
   StringValue,
   TimestampValue,
   BooleanValue,
-  EnumeratedValue,
-  AggregateValue,
+  // EnumeratedValue,
+  // AggregateValue,
 );
 
 export const CommandHistoryAttribute = Schema.Struct({
