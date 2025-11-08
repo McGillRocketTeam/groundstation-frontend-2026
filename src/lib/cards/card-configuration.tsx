@@ -1,5 +1,8 @@
+import {
+  MqttDebugCard,
+  MqttDebugCardConfiguration,
+} from "@/components/cards/debug";
 import { TextCard, TextCardConfiguration } from "@/components/cards/text";
-import { MqttDebugCard, MqttDebugCardConfiguration } from "@/components/cards/text";
 
 // Match cards with their schemas
 export const cardSchemaMap = {
