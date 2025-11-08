@@ -79,6 +79,38 @@ export function AddCardForm<T extends Schema.Schema<any, any>>({
                     )}
                   />
                 );
+              case "number":
+                return (
+                  <FormField
+                    control={form.control}
+                    name={fieldKey}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>
+                          {formField.title ?? formField.key}
+                        </FormLabel>
+                        <FormControl
+                          {...field}
+                          render={(fieldControl) => (
+                            <Input
+                              {...fieldControl}
+                              value={field.value}
+                              onChange={(e) => {
+                                form.setValue(
+                                  fieldKey,
+                                  e.target.valueAsNumber as any,
+                                );
+                              }}
+                              type="number"
+                            />
+                          )}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                );
+
               case "string":
                 return (
                   <FormField
