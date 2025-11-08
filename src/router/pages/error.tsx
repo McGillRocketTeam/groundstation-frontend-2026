@@ -17,6 +17,19 @@ export function RootErrorBoundary() {
   if (error instanceof Error) {
     return (
       <div className="space-y-4 p-4">
+        <button 
+          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 
+          rounded shadow-md transition-colors duration-200"
+          onClick={() => {
+            // reset to default layout
+            localStorage.clear();
+            // reload the page
+            window.location.reload();
+          }}
+        >
+          Reset to Default Layout
+        </button>
+      
         <div className="bg-error-background border-error text-error flex w-fit flex-col border p-2 font-semibold uppercase">
           <h1>Unexpected Error</h1>
           <p>MESSAGE: {error.message}</p>
