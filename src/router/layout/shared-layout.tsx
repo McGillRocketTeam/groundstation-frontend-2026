@@ -1,11 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import { connectionStatusAtom } from "@/lib/atoms/connection-status";
-import { yamcsWebsocketAtom } from "@/lib/atoms/yamcs";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { Outlet } from "react-router";
 
 export function SharedLayout() {
-  useAtomValue(yamcsWebsocketAtom);
+  // useAtomValue(yamcsWebsocketAtom);
   return (
     <div className="flex h-full flex-col">
       <div className="flex flex-row items-center justify-between border-b p-3">
