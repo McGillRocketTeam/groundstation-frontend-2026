@@ -2,8 +2,12 @@ import Map, { Marker, NavigationControl } from "@vis.gl/react-maplibre";
 import type { IDockviewPanelProps } from "dockview";
 import maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import type { MapCardConfiguration } from ".";
+import { parameterSubscriptionAtom } from "@/lib/yamcs/client/websocket/client";
+import type { QualifiedName } from "@/lib/yamcs/client/types";
+import { useAtomSuspense } from "@effect-atom/atom-react";
+
 
 export const MapCard = (
   props: IDockviewPanelProps<typeof MapCardConfiguration.Type>,
@@ -11,15 +15,9 @@ export const MapCard = (
   const {
     long,
     lat,
-    tempTrackerLong,
-    tempTrackerLat,
     trackerLong,
     trackerLat,
   } = props.params;
-
-  // keep unused tracker variables referenced
-  void trackerLong;
-  void trackerLat;
 
   // normalize numeric params: inputs may be strings from saved configs or the form
   const toNumber = (v: any) => {
@@ -33,15 +31,6 @@ export const MapCard = (
 
   const longitude = toNumber(long);
   const latitude = toNumber(lat);
-  const markerLongitude = toNumber(tempTrackerLong);
-  const markerLatitude = toNumber(tempTrackerLat);
-
-  // debug: log parsed values to help trace why the map centers incorrectly
-  // (leave as console.debug so it doesn't clutter production logs)
-  console.debug("MapCard params parsed:", {
-    raw: { long, lat, tempTrackerLong, tempTrackerLat },
-    parsed: { longitude, latitude, markerLongitude, markerLatitude },
-  });
   // initialViewState should only define the base map view (longitude, latitude, zoom)
   // tracker/marker coordinates are separate and should not be part of the base view
   const initialViewState = useMemo(
@@ -68,16 +57,39 @@ export const MapCard = (
         mapStyle={mapStyleUrl}
       >
         <NavigationControl position="top-left" />
-        {/* only render the marker when both coords are present */}
-        {typeof markerLongitude === "number" &&
-          typeof markerLatitude === "number" && (
-            <Marker
-              longitude={markerLongitude}
-              latitude={markerLatitude}
-              color="red"
+        {trackerLat && trackerLong && (
+          <Suspense fallback={<div>Loading Marker Coordinates...</div>}>
+            <ParameterMarker
+              // trackerLat should be the latitude parameter, trackerLong the longitude parameter
+              latParamName={trackerLat.qualifiedName}
+              longParamName={trackerLong.qualifiedName}
             />
-          )}
+          </Suspense>
+        )}
       </Map>
     </div>
   );
 };
+
+
+
+function ParameterMarker({ latParamName, longParamName }: { latParamName: QualifiedName; longParamName: QualifiedName }) {
+  const latUpdate = useAtomSuspense(parameterSubscriptionAtom(latParamName)).value;
+  const longUpdate = useAtomSuspense(parameterSubscriptionAtom(longParamName)).value;
+
+  const parseNumber = (paramValue: any): number | undefined => {
+    if (!paramValue) return undefined;
+    const v = paramValue.endValue;
+    if (v == null) return undefined;
+    const candidate = (v as any).value ?? (v as any).raw ?? v;
+    const n = Number(candidate);
+    return Number.isFinite(n) ? n : undefined;
+  };
+  const lat = parseNumber(latUpdate);
+  const longitude = parseNumber(longUpdate);
+
+  // If we couldn't parse numeric coordinates, don't render the marker
+  if (lat === undefined || longitude === undefined) return null;
+
+  return <Marker longitude={longitude} latitude={lat} color="red" />;
+}

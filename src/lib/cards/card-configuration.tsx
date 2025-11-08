@@ -2,6 +2,7 @@ import {
   CommandHistoryCard,
   CommandHistoryCardConfiguration,
 } from "@/components/cards/commandHistory";
+import { MapCard, MapCardConfiguration } from "@/components/cards/map";
 import {
   ParameterCard,
   ParameterCardConfiguration,
@@ -13,6 +14,7 @@ export const cardSchemaMap = {
   TextCard: TextCardConfiguration, // <-- Effect schema
   ParameterCard: ParameterCardConfiguration,
   CommandHistoryCard: CommandHistoryCardConfiguration,
+  MapCard: MapCardConfiguration,
 };
 type CardSchemaMap = typeof cardSchemaMap;
 type CardSchemaValues = CardSchemaMap[keyof CardSchemaMap];
@@ -25,4 +27,5 @@ export const cardComponentMap = {
   TextCard: TextCard,
   ParameterCard: ParameterCard,
   CommandHistoryCard: CommandHistoryCard,
+  MapCard: MapCard,
 };
