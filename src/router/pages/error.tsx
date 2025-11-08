@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 
 export function RootErrorBoundary() {
@@ -17,9 +18,8 @@ export function RootErrorBoundary() {
   if (error instanceof Error) {
     return (
       <div className="space-y-4 p-4">
-        <button 
-          className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 
-          rounded shadow-md transition-colors duration-200"
+        <Button
+          variant="destructive"
           onClick={() => {
             // reset to default layout
             localStorage.clear();
@@ -28,8 +28,8 @@ export function RootErrorBoundary() {
           }}
         >
           Reset to Default Layout
-        </button>
-      
+        </Button>
+
         <div className="bg-error-background border-error text-error flex w-fit flex-col border p-2 font-semibold uppercase">
           <h1>Unexpected Error</h1>
           <p>MESSAGE: {error.message}</p>
