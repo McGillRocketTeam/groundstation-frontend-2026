@@ -69,7 +69,7 @@ export function MqttDebugCard({
   }, [params.brokerUrl]);
 
   return (
-    <div className="h-full w-full overflow-auto bg-gray-200 p-2 text-black">
+    <div className="h-full w-full overflow-auto p-2">
       {!isConnected && <div>Connecting to MQTT broker...</div>}
 
       {isConnected && (
@@ -95,7 +95,7 @@ function TreeElement({ entry }: { entry: [string, any] }) {
       {/* Clickable topic name */}
       <div
         className={`select-none ${
-          isExpandable ? "cursor-pointer hover:text-blue-800" : "cursor-default"
+          isExpandable ? "cursor-pointer hover:opacity-75" : "cursor-default"
         }`}
         onClick={() => isExpandable && setExpanded(!expanded)}
       >
@@ -105,7 +105,7 @@ function TreeElement({ entry }: { entry: [string, any] }) {
 
       {/* Displaying nested structure */}
       {isExpandable && expanded && (
-        <div className="ml-2">
+        <div className="ml-2 border-l">
           {Object.entries(data).map((childEntry) => (
             <TreeElement key={childEntry[0]} entry={childEntry} />
           ))}

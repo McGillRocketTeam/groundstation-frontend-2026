@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           "bg-neutral text-neutral-background hover:bg-neutral/80 border",
         destructive:
-          "bg-error text-white hover:bg-error/80 focus-visible:ring-error/20",
+          "bg-error text-white hover:bg-error/80 focus-visible:ring-error/20 dark:text-error-background",
         outline:
           "bg-neutral-background text-neutral hover:bg-neutral-background border",
         secondary:
