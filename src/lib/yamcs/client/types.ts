@@ -302,8 +302,8 @@ export const Value = Schema.Union(
   StringValue,
   TimestampValue,
   BooleanValue,
-  // EnumeratedValue,
-  // AggregateValue,
+  EnumeratedValue,
+  AggregateValue,
 );
 
 export const CommandHistoryAttribute = Schema.Struct({

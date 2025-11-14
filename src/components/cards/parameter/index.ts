@@ -4,6 +4,8 @@ import { ParameterCard } from "./parameter-card";
 
 const ParameterCardConfiguration = Schema.TaggedStruct("ParameterCard", {
   parameter: ParameterInfoType.annotations({ title: "YAMCS Parameter" }),
-}).annotations({ title: "ParmeterCard Card" });
+}).annotations({ title: "Parmeter Card" });
+
+type test = typeof ParameterCardConfiguration.Type;
 
 export { ParameterCard, ParameterCardConfiguration };

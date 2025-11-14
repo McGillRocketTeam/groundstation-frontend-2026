@@ -229,8 +229,9 @@ export const parameterSubscriptionAtom = Atom.family(
           );
 
           const eventStream = stream.pipe(
-            Stream.map((m) => m.data),
-            Stream.mapEffect((m) => Schema.decodeUnknown(ParameterEvent)(m)),
+            Stream.mapEffect((m) =>
+              Schema.decodeUnknown(ParameterEvent)(m.data),
+            ),
           );
 
           // Store the mapping
