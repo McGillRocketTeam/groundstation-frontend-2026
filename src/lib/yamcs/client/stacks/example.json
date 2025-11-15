@@ -1,0 +1,75 @@
+{
+  "$schema": "https://yamcs.org/schema/stack.schema.json",
+  "steps": [
+    {
+      "type": "text",
+      "text": "# AutoTester Procedure Stack\n\nExercitation commodo ex enim do labore eu ullamco excepteur Lorem tempor minim in. Aliqua ex ex sint fugiat et do dolor laborum reprehenderit minim proident. Ullamco et ad do ullamco dolore id. Laborum incididunt minim commodo laborum labore veniam.\n\nUllamco laborum aliquip dolore ea ad anim exercitation commodo excepteur consectetur duis enim ad commodo consectetur. Aliquip excepteur consequat consectetur quis proident aliquip nulla ut. Culpa id ullamco anim eiusmod dolore consectetur dolore consectetur id do. Culpa dolore Lorem reprehenderit duis magna id occaecat labore."
+    },
+    {
+      "type": "check",
+      "parameters": [
+        {
+          "parameter": "/myproject/ADCS_Error_Flag"
+        },
+        {
+          "parameter": "/myproject/ADCS_Error_Flag"
+        },
+        {
+          "parameter": "/myproject/ADCS_Error_Flag"
+        }
+      ]
+    },
+    {
+      "type": "command",
+      "name": "/myproject/SwitchVoltageOff",
+      "extraOptions": [],
+      "arguments": [
+        {
+          "name": "Battery",
+          "value": "2"
+        }
+      ]
+    },
+    {
+      "type": "verify",
+      "condition": [
+        {
+          "parameter": "/myproject/A",
+          "operator": "gt",
+          "value": "7000"
+        },
+        {
+          "parameter": "/myproject/ADCS_Error_Flag",
+          "operator": "eq",
+          "value": "false"
+        },
+        {
+          "parameter": "/myproject/Battery1_Temp",
+          "operator": "eq",
+          "value": "0"
+        },
+        {
+          "parameter": "/myproject/Battery1_Voltage",
+          "operator": "eq",
+          "value": "0"
+        },
+        {
+          "parameter": "/myproject/Battery2_Temp",
+          "operator": "eq",
+          "value": "0"
+        },
+        {
+          "parameter": "/myproject/Battery2_Voltage",
+          "operator": "eq",
+          "value": "0"
+        }
+      ],
+      "timeout": 10000,
+      "comment": "Ensures all payload commands are correct."
+    }
+  ],
+  "advancement": {
+    "acknowledgment": "Acknowledge_Released",
+    "wait": 0
+  }
+}
