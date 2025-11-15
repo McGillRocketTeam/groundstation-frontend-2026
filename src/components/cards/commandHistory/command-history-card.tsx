@@ -1,50 +1,86 @@
 import { YamcsClient } from "@/lib/yamcs/client";
+import type {
+  CommandHistoryAttribute,
+  StreamingCommandHisotryEntry,
+} from "@/lib/yamcs/client/types";
 import { commandsSubscriptionAtom } from "@/lib/yamcs/client/websocket/client";
 import { useAtomSuspense } from "@effect-atom/atom-react";
-import type { IDockviewPanelProps } from "dockview-react";
 import { Suspense } from "react";
-import { CommandHistoryCardConfiguration } from ".";
 
-export function CommandHistoryCard(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _props: IDockviewPanelProps<typeof CommandHistoryCardConfiguration.Type>,
-) {
+export function CommandHistoryCard() {
   return (
-    <div className="h-full w-full overflow-scroll p-2">
-      <Suspense fallback={<div>Awaitng Commands...</div>}>
-        <Test />
-      </Suspense>
-      <hr />
-      <Suspense fallback={<div>Awaitng History...</div>}>
-        <Test2 />
-      </Suspense>
+    <div className="h-full overflow-scroll rounded-xl bg-black p-2 text-white">
+      <h2 className="mb-2 text-lg font-bold">CMD History</h2>
+
+      <table className="w-full text-left">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Name</th>
+            <th>Success</th>
+          </tr>
+        </thead>
+        <tbody>
+          <Suspense
+            fallback={
+              <tr>
+                <td>Loading...</td>
+              </tr>
+            }
+          >
+            <LiveCommandHistoryRows />
+            <CommandHistoryRows />
+          </Suspense>
+        </tbody>
+      </table>
     </div>
   );
 }
 
-function Test2() {
+function CommandHistoryRows() {
   const { commands } = useAtomSuspense(
     YamcsClient.query("command", "listCommands", {
       path: { instance: "mqtt-frames" },
     }),
   ).value;
 
-  return (
-    <div>
-      {commands.map((cmd) => (
-        <div key={cmd.id}>{cmd.commandName}</div>
-      ))}
-    </div>
-  );
+  return commands.map((cmd) => {
+    return <CommandRow cmd={cmd} key={cmd.id} />;
+  });
 }
 
-function Test() {
-  const cmds = useAtomSuspense(commandsSubscriptionAtom).value;
+function LiveCommandHistoryRows() {
+  const commands = useAtomSuspense(commandsSubscriptionAtom).value;
+
+  return commands.map((cmd) => {
+    return <CommandRow cmd={cmd} key={cmd.id} />;
+  });
+}
+
+function CommandRow({
+  cmd,
+}: {
+  cmd: typeof StreamingCommandHisotryEntry.Type;
+}) {
+  // Extract success status from command attributes
+  function getStatus(attrs: readonly (typeof CommandHistoryAttribute.Type)[]) {
+    const released = attrs.find(
+      (a) => a.name === "Acknowledge_Released_Status",
+    );
+
+    if (!released) return "NOK";
+
+    // Some Yamcs responses store value as {stringValue: "OK"} or similar
+    const val = released.value.type === "STRING" ? released.value.value : "NOK";
+
+    return val;
+  }
+
   return (
-    <div>
-      {cmds.map((cmd) => (
-        <div key={cmd.id}>{cmd.commandName}</div>
-      ))}
-    </div>
+    <tr key={cmd.id}>
+      <td>{cmd.generationTime.toLocaleTimeString()}</td>
+      <td>{cmd.commandId.commandName}</td>
+      <td>{getStatus(cmd.attr) === "OK" ? "✅" : "❌"}</td>
+    </tr>
   );
 }

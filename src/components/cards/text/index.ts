@@ -1,7 +1,6 @@
 import { ParameterInfoType } from "@/lib/cards/types";
 import { Schema } from "effect";
 import { TextCard } from "./text-card";
-import { CommandHistoryCard } from "./command-history-card";
 
 const TextCardConfiguration = Schema.TaggedStruct("TextCard", {
   text: Schema.String.pipe(
@@ -13,8 +12,5 @@ const TextCardConfiguration = Schema.TaggedStruct("TextCard", {
   parameter: ParameterInfoType.annotations({ title: "YAMCS Parameter" }),
 }).annotations({ title: "Text Card" });
 
-const CommandHistoryConfiguration = Schema.TaggedStruct("CommandHistoryCard", {
-}).annotations({ title: "Command History" });
 
 export { TextCard, TextCardConfiguration };
-export { CommandHistoryCard, CommandHistoryConfiguration};
