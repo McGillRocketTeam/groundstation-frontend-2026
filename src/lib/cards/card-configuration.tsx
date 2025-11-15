@@ -3,6 +3,10 @@ import {
   CommandHistoryCardConfiguration,
 } from "@/components/cards/commandHistory";
 import {
+  MqttDebugCard,
+  MqttDebugCardConfiguration,
+} from "@/components/cards/debug";
+import {
   ParameterCard,
   ParameterCardConfiguration,
 } from "@/components/cards/parameter";
@@ -11,6 +15,7 @@ import { TextCard, TextCardConfiguration } from "@/components/cards/text";
 // Match cards with their schemas
 export const cardSchemaMap = {
   TextCard: TextCardConfiguration, // <-- Effect schema
+  MqttDebugCard: MqttDebugCardConfiguration,
   ParameterCard: ParameterCardConfiguration,
   CommandHistoryCard: CommandHistoryCardConfiguration,
 };
@@ -23,6 +28,7 @@ export type CardConfigurationUnion = CardSchemaValues["Type"];
 // Match cards with their React components
 export const cardComponentMap = {
   TextCard: TextCard,
+  MqttDebugCard: MqttDebugCard,
   ParameterCard: ParameterCard,
   CommandHistoryCard: CommandHistoryCard,
 };

@@ -13,7 +13,7 @@ html:is(.dark) {
 @theme inline {
   --default-font-family: "JetBrains Mono", monospace;
   --default-mono-font-family: "JetBrains Mono", monospace;
-
+  --font-sans: "Public Sans", sans-serif;
   --color-mrt-red: var(--mrt-red);
   --color-background: var(--background);
   --color-primary: var(--primary);
