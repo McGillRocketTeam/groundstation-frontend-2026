@@ -108,7 +108,7 @@ function ConditionView({
       return <Badge variant="error">Error Fetching Param</Badge>;
     },
     onSuccess({ value }) {
-      if (value.engValue.value.toString() === target)
+      if ("value" in value.engValue && value.engValue.value === target)
         return (
           <Badge className="w-full justify-start text-left" variant="success">
             {value.engValue.value.toString()}
@@ -117,7 +117,9 @@ function ConditionView({
       else {
         return (
           <Badge className="w-full justify-start text-left" variant="error">
-            {value.engValue.value.toString()}
+            {"value" in value.engValue
+              ? value.engValue.value.toString()
+              : value.engValue.type}
           </Badge>
         );
       }
@@ -135,7 +137,13 @@ function CheckView({ parameter }: { parameter: QualifiedName }) {
       return <Badge variant="error">Error Fetching Param</Badge>;
     },
     onSuccess({ value }) {
-      return <div>{value.engValue.value.toString()}</div>;
+      return (
+        <div>
+          {"value" in value.engValue
+            ? value.engValue.value.toString()
+            : value.engValue.type}
+        </div>
+      );
     },
   });
 }
