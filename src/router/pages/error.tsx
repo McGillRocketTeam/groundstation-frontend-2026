@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { isRouteErrorResponse, useRouteError } from "react-router";
 
 export function RootErrorBoundary() {
@@ -17,6 +18,18 @@ export function RootErrorBoundary() {
   if (error instanceof Error) {
     return (
       <div className="space-y-4 p-4">
+        <Button
+          variant="destructive"
+          onClick={() => {
+            // reset to default layout
+            localStorage.clear();
+            // reload the page
+            window.location.reload();
+          }}
+        >
+          Reset to Default Layout
+        </Button>
+
         <div className="bg-error-background border-error text-error flex w-fit flex-col border p-2 font-semibold uppercase">
           <h1>Unexpected Error</h1>
           <pre className="text-wrap">MESSAGE: {error.message}</pre>

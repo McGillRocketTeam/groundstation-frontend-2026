@@ -11,7 +11,7 @@ import { SettingsPage } from "./pages/settings";
 import defaultLayout from "@/../public/default-layout.json";
 import { StackPage } from "./pages/stack";
 
-const getDashboardList = Effect.gen(function* () {
+export const getDashboardList = Effect.gen(function* () {
   const kv = yield* KeyValueStore.KeyValueStore;
 
   const maybeValue = yield* kv.get("mrt-gs-dashboards");
