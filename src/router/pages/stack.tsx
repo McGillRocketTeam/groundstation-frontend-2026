@@ -13,15 +13,18 @@ export function StackPage() {
   return (
     <div className="mx-auto grid max-w-4xl grid-cols-[auto_1fr] gap-x-2 gap-y-6 p-4">
       <div className="col-span-full flex flex-row items-center justify-between">
-        <h1 className="text-primary text-2xl">AutoTest.ycs</h1>
-        <Button>Run from Start</Button>
+        <h1 className="text-primary text-xl">AutoTest.ycs</h1>
+        <Button size="sm" className="text-sm">
+          Run from Start
+        </Button>
       </div>
       {stack.steps.map((step) => (
         <div key={step.key} className="col-span-full grid grid-cols-subgrid">
           <div className="py-2">
             <StepIndicator step={step} />
+            <button className="hover:bg-muted">[▶] </button>
           </div>
-          <div className="bg-muted/25 flex flex-col gap-2 border p-2">
+          <div className="bg-muted/25 flex flex-col gap-2 border p-2 font-sans">
             <div>
               <StackStep step={step} />
             </div>
@@ -61,9 +64,12 @@ function StackStep({ step }: { step: typeof Step.Type }) {
     case "check":
       return (
         <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
-          <div className="col-span-full">Parameters:</div>
+          <div className="col-span-full font-semibold">Parameters:</div>
           {step.parameters.map((p) => (
-            <div key={p.key} className="col-span-full grid grid-cols-subgrid">
+            <div
+              key={p.key}
+              className="col-span-full grid grid-cols-subgrid font-mono text-sm"
+            >
               <span>{p.parameter}</span>
               <CheckView parameter={p.parameter} />
             </div>
@@ -71,13 +77,21 @@ function StackStep({ step }: { step: typeof Step.Type }) {
         </div>
       );
     case "command":
-      return <div>Command: {step.name}</div>;
+      return (
+        <div>
+          <span className="font-semibold">Command: </span>
+          <span className="font-mono text-sm">{step.name}</span>
+        </div>
+      );
     case "verify":
       return (
         <div className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2">
-          <div className="col-span-full">Verify:</div>
+          <div className="col-span-full font-semibold">Verify:</div>
           {step.condition.map((c) => (
-            <div key={c.key} className="col-span-full grid grid-cols-subgrid">
+            <div
+              key={c.key}
+              className="col-span-full grid grid-cols-subgrid font-mono text-sm"
+            >
               <span>
                 {c.parameter} {c.operator.toString()} {c.value.toString()}
               </span>
