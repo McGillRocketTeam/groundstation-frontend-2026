@@ -1,7 +1,7 @@
 import { connectionStatusAtom } from "@/lib/atoms/connection-status";
 import { Atom } from "@effect-atom/atom-react";
 import { Chunk, Effect, Logger, Schema, Stream, StreamEmit } from "effect";
-import type { QualifiedName } from "../types";
+import type { QualifiedName, StreamingCommandHisotryEntry } from "../types";
 import {
   Cancel,
   SubscribeCommandsRequest,
@@ -20,6 +20,7 @@ import {
   SubscriptionId,
   TimeEvent,
 } from "./server-messages";
+import { mergeCommandEntries } from "./utils";
 
 Atom.runtime.addGlobalLayer(Logger.pretty);
 
@@ -203,11 +204,30 @@ export const commandsSubscriptionAtom = yamcsRuntime.atom(
         }),
       );
 
-      return stream.pipe(
+      const dataStream = stream.pipe(
         Stream.mapEffect((m) => Schema.decodeUnknown(CommandHistoryEvent)(m)),
         Stream.map((m) => m.data),
-        Stream.accumulate,
         Stream.ensuring(ws.unsubscribe(call)),
+      );
+
+      return dataStream.pipe(
+        Stream.scanEffect(
+          new Map<string, typeof StreamingCommandHisotryEntry.Type>(),
+          (state, commandEntry) =>
+            Effect.sync(() => {
+              const id = commandEntry.id;
+              const current = state.get(id);
+
+              if (current) {
+                state.set(id, mergeCommandEntries(current, commandEntry));
+              } else {
+                state.set(id, commandEntry);
+              }
+
+              return state;
+            }),
+        ),
+        Stream.map((m) => Array.from(m.values())),
       );
     }),
   ),
