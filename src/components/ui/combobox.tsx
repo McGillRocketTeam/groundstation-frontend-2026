@@ -84,7 +84,7 @@ function ComboboxPopup(
   const combinedProps = mergeProps<typeof ComboboxPrimitive.Popup>(
     {
       className:
-        "[--input-container-height:3rem] origin-[var(--transform-origin)] max-w-[var(--available-width)] max-h-[min(24rem,var(--available-height))] bg-[canvas] shadow-lg text-gray-900 outline-1 outline-gray-200 transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0 dark:shadow-none dark:-outline-offset-1 dark:outline-gray-300 duration-100",
+        "[--input-container-height:3rem] origin-[var(--transform-origin)] max-w-[var(--available-width)] max-h-[min(24rem,var(--available-height))] bg-[canvas] shadow-lg text-primary outline-1 outline-border transition-[transform,scale,opacity] data-[ending-style]:scale-90 data-[ending-style]:opacity-0 data-[starting-style]:scale-90 data-[starting-style]:opacity-0 dark:shadow-none dark:-outline-offset-1 duration-100",
       "aria-label": "Select One",
     },
     props,

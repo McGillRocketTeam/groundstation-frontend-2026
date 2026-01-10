@@ -13,7 +13,7 @@ html:is(.dark) {
 @theme inline {
   --default-font-family: "JetBrains Mono", monospace;
   --default-mono-font-family: "JetBrains Mono", monospace;
-
+  --font-sans: "Public Sans", sans-serif;
   --color-mrt-red: var(--mrt-red);
   --color-background: var(--background);
   --color-primary: var(--primary);
@@ -120,4 +120,18 @@ body {
       rgba(0, 0, 0, 0) calc(50% + 0.8px),
       rgba(0, 0, 0, 0) 100%
     );
+}
+
+.prose {
+  font-family: var(--font-sans);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  font-size: var(--text-sm);
+
+  h1 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+  }
 }

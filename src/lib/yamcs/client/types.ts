@@ -283,11 +283,11 @@ const BooleanValue = Schema.Struct({
   ),
 });
 
-const EnumeratedValue = Schema.Struct({
+export const EnumeratedValue = Schema.Struct({
   type: Schema.Literal("ENUMERATED"),
 });
 
-const AggregateValue = Schema.Struct({
+export const AggregateValue = Schema.Struct({
   type: Schema.Literal("AGGREGATE"),
 });
 
@@ -330,6 +330,21 @@ export const CommandHistoryEntry = Schema.Struct({
   attr: Schema.Array(CommandHistoryAttribute),
   generationTime: Schema.DateFromString,
   assignments: Schema.Array(CommandAssignment),
+});
+
+export const StreamingCommandHisotryEntry = Schema.Struct({
+  id: CommandId,
+  commandName: QualifiedName,
+
+  aliases: Schema.optional(
+    Schema.Record({ key: Schema.String, value: Schema.String }),
+  ),
+  origin: Schema.String,
+  sequenceNumber: Schema.optional(Schema.Number),
+  commandId: CommandIdObject,
+  attr: Schema.Array(CommandHistoryAttribute),
+  generationTime: Schema.DateFromString,
+  assignments: Schema.optional(Schema.Array(CommandAssignment)),
 });
 
 /**
