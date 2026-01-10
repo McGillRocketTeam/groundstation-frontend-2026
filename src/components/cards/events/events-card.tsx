@@ -5,18 +5,10 @@ import {
   useReactTable,
   getFilteredRowModel
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
-
-// shape of events from the yamcs backend
-type YamcsEvent = {
-  severity: string;
-  createdBy: string;
-  source: string;
-  generationTime: string;
-  receptionTime: string;
-  seqNumber: number;
-  message: string;
-}
+import { Suspense, useState } from "react";
+import { Event } from "@/lib/yamcs/client/types";
+import { useAtomSuspense } from "@effect-atom/atom-react";
+import { eventsSubscriptionAtom } from "@/lib/yamcs/client/websocket/client";
 
   // for sorting table based on generationTime and receptionTime
   type TimeFilter =
@@ -46,58 +38,30 @@ type YamcsEvent = {
   };
 
 export function EventsCard() {
-  const [events, setEvents] = useState<YamcsEvent[]>([]);
+  return <Suspense fallback={<div>Loading...</div>}>
+    <EventsCardBody />
+  </Suspense>
+}
+
+type YamcsEvent = typeof Event.Type
+
+export function EventsCardBody() {
+  const events = useAtomSuspense(eventsSubscriptionAtom).value
 
   // getting initial events from yamcs backend
-  useEffect(() => {
-    fetch("http://localhost:8090/api/archive/mqtt-frames/events?limit=50")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data.events);
-        setEvents(data.events);
-      })
-      .catch((error) => console.error("Error fetching initial events", error));
-  }, []);
+  // useEffect(() => {
+  //   fetch("http://localhost:8090/api/archive/mqtt-frames/events?limit=50")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       console.log(data.events);
+  //       setEvents(data.events);
+  //     })
+  //     .catch((error) => console.error("Error fetching initial events", error));
+  // }, []);
 
-  // NEEDS WORK. NOT WORKING AS IS.
-  useEffect(() => {
-    const websocket = new WebSocket("ws://localhost:8090/api/websocket");
-
-    // called when the connection opens
-    websocket.onopen = () => {
-      // subscribing to the events stream
-      websocket.send(
-        JSON.stringify({
-          type: "subscribe",
-          resource: "events",
-          instance: "mqtt-frames",
-          processor: "realtime",
-        }),
-      );
-    };
-
-    // update events list each time a new event is retrieved from the backend
-    websocket.onmessage = (e) => {
-      // turn data into JSON object
-      const result = JSON.parse(e.data);
-
-      // update events list
-      if (result.events) setEvents((prev) => [...result.events, ...prev]);
-    };
-
-    websocket.onerror = (err) => {
-      console.error("Websocket error", err);
-    };
-
-    return;
-    /*
-        () => {
-            websocket.close();
-        };*/
-  }, []);
 
   // function that returns whether the row should be displayed based on time
-  const generationTimeFilter: FilterFn<YamcsEvent> = (
+  const generationTimeFilter: FilterFn<typeof Event.Type> = (
     row,
     columnId,
     filterValue: TimeFilter
@@ -272,7 +236,7 @@ export function EventsCard() {
   }
 
   // CellContext<RowType, CellValueType>. Called with cell.getContext()
-  const getCellValue = (props: CellContext<YamcsEvent, string>) => props.getValue();
+  const getCellValue = (props: CellContext<YamcsEvent, string>) => props.getValue().toString();
 
   const [columnFilters, setColumnFilters] =
     useState<ColumnFiltersState>([]);
@@ -310,7 +274,7 @@ export function EventsCard() {
 
   // TanStack table
   const eventsTable = useReactTable<YamcsEvent>({
-    data: events,
+    data: events.reverse(),
     columns,
     state: { columnFilters },
     onColumnFiltersChange: setColumnFilters,

@@ -1,5 +1,6 @@
 import { Schema } from "effect";
 import {
+  Event,
   LinkInfo,
   NamedObjectId,
   StreamingCommandHisotryEntry,
@@ -66,6 +67,13 @@ export const LinkEvent = Schema.Struct({
   data: Schema.Struct({
     links: Schema.Array(LinkInfo),
   }),
+});
+
+export const EventsEvent = Schema.Struct({
+  type: Schema.Literal("events"),
+  call: SubscriptionId,
+  seq: Schema.NonNegativeInt,
+  data: Event,
 });
 
 export const CommandHistoryEvent = Schema.Struct({

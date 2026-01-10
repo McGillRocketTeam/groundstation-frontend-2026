@@ -22,6 +22,10 @@ export const SubscribeLinksRequest = Schema.TaggedStruct("links", {
   instance: Schema.String,
 });
 
+export const SubscribeEventsRequest = Schema.TaggedStruct("events", {
+  instance: Schema.String,
+});
+
 export const SubscribeCommandsRequest = Schema.TaggedStruct("commands", {
   instance: Schema.String,
   processor: Schema.String,
@@ -37,6 +41,7 @@ export const SubscribeParameterRequest = Schema.TaggedStruct("parameters", {
 export const SubscriptionRequest = Schema.Union(
   SubscribeTimeRequest,
   SubscribeLinksRequest,
+  SubscribeEventsRequest,
   SubscribeCommandsRequest,
   SubscribeParameterRequest,
 );

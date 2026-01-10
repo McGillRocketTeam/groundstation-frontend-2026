@@ -5,6 +5,7 @@ import type { QualifiedName, StreamingCommandHisotryEntry } from "../types";
 import {
   Cancel,
   SubscribeCommandsRequest,
+  SubscribeEventsRequest,
   SubscribeLinksRequest,
   SubscribeParameterRequest,
   SubscribeTimeRequest,
@@ -13,6 +14,7 @@ import {
 import {
   CommandHistoryEvent,
   Events,
+  EventsEvent,
   LinkEvent,
   ParameterEvent,
   Reply,
@@ -21,6 +23,9 @@ import {
   TimeEvent,
 } from "./server-messages";
 import { mergeCommandEntries } from "./utils";
+import { HttpApiClient, HttpClient } from "@effect/platform";
+import { YamcsApi } from "../http";
+import { BrowserHttpClient } from "@effect/platform-browser";
 
 Atom.runtime.addGlobalLayer(Logger.pretty);
 
@@ -186,6 +191,52 @@ export const linksSubscriptionAtom = yamcsRuntime.atom(
       return stream.pipe(
         Stream.mapEffect((m) => Schema.decodeUnknown(LinkEvent)(m)),
         Stream.map((m) => m.data.links),
+        Stream.ensuring(ws.unsubscribe(call)),
+      );
+    }),
+  ),
+);
+
+const YamcsClient = HttpApiClient.make(YamcsApi, {
+  baseUrl: "http://localhost:8090", transformClient: (client) => client.pipe(
+          HttpClient.withTracerDisabledWhen(() => true),
+  )
+}).pipe(
+  Effect.provide(BrowserHttpClient.layerXMLHttpRequest)
+)
+
+export const eventsSubscriptionAtom = yamcsRuntime.atom(
+  Stream.unwrap(
+    Effect.gen(function* () {
+      const ws = yield* WebSocketClient;
+      const client = yield* YamcsClient;
+
+      const { events } =
+        yield* client.archive
+          .listEvents({ path: { instance: "mqtt-frames" } })
+          .pipe(
+            Effect.tapErrorTag("HttpApiDecodeError", (e) => Effect.log(e))
+          );
+
+      const priorEvents = events.slice().reverse();
+
+
+      const { call, stream } = yield* ws.subscribe(
+        SubscribeEventsRequest.make({ instance: "mqtt-frames" }),
+      );
+
+      return stream.pipe(
+        // decode websocket messages
+        Stream.mapEffect((m) =>
+          Schema.decodeUnknown(EventsEvent)(m)
+        ),
+
+        // accumulate events
+        Stream.scan(
+          priorEvents,
+          (allEvents, event) => [...allEvents, event.data]
+        ),
+
         Stream.ensuring(ws.unsubscribe(call)),
       );
     }),

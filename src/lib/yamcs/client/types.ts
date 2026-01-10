@@ -419,3 +419,14 @@ export const LinkInfo = Schema.Struct({
   actions: Schema.optional(Schema.Array(ActionInfo)),
   parameters: Schema.optional(Schema.Array(QualifiedName)),
 });
+
+export const EventSeverity = Schema.Literal("INFO", "WATCH", "WARNING", "DISTRESS", "CRITICAL", "SEVERE")
+
+export const Event = Schema.Struct({
+  source: Schema.String,
+  generationTime: Schema.DateFromString,
+  receptionTime: Schema.DateFromString,
+  seqNumber: Schema.Number,
+  message: Schema.String,
+  severity: EventSeverity
+})
