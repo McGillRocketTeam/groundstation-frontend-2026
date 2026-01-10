@@ -215,42 +215,42 @@ export const CommandIdObject = Schema.Struct({
 
 const FloatValue = Schema.Struct({
   type: Schema.Literal("FLOAT"),
-  value: Schema.propertySignature(Schema.Number).pipe(
+  value: Schema.propertySignature(Schema.Union(Schema.Number, Schema.NumberFromString)).pipe(
     Schema.fromKey("floatValue"),
   ),
 });
 
 const DoubleValue = Schema.Struct({
   type: Schema.Literal("DOUBLE"),
-  value: Schema.propertySignature(Schema.Number).pipe(
+  value: Schema.propertySignature(Schema.Union(Schema.Number, Schema.NumberFromString)).pipe(
     Schema.fromKey("doubleValue"),
   ),
 });
 
 const Sint32Value = Schema.Struct({
   type: Schema.Literal("SINT32"),
-  value: Schema.propertySignature(Schema.Number).pipe(
+  value: Schema.propertySignature(Schema.Union(Schema.Number, Schema.NumberFromString)).pipe(
     Schema.fromKey("sint32Value"),
   ),
 });
 
 const Uint32Value = Schema.Struct({
   type: Schema.Literal("UINT32"),
-  value: Schema.propertySignature(Schema.Number).pipe(
+  value: Schema.propertySignature(Schema.Union(Schema.Number, Schema.NumberFromString)).pipe(
     Schema.fromKey("uint32Value"),
   ),
 });
 
 const Sint64Value = Schema.Struct({
   type: Schema.Literal("SINT64"),
-  value: Schema.propertySignature(Schema.Number).pipe(
+  value: Schema.propertySignature(Schema.Union(Schema.Number, Schema.NumberFromString)).pipe(
     Schema.fromKey("sint64Value"),
   ),
 });
 
 const Uint64Value = Schema.Struct({
   type: Schema.Literal("UINT64"),
-  value: Schema.propertySignature(Schema.Number).pipe(
+  value: Schema.propertySignature(Schema.Union(Schema.Number, Schema.NumberFromString)).pipe(
     Schema.fromKey("uint64Value"),
   ),
 });

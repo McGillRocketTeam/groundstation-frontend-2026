@@ -77,7 +77,7 @@ export const CommandHistoryEvent = Schema.Struct({
 
 export const ParameterValue = Schema.Struct({
   // id: NamedObjectId,
-  rawValue: Value,
+  rawValue: Schema.optional(Value),
   engValue: Value,
   acquisitionTime: Schema.DateFromString,
   generationTime: Schema.DateFromString, // RFC 3339 timestamp

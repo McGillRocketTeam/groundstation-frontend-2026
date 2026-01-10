@@ -10,6 +10,10 @@ import {
   ParameterCard,
   ParameterCardConfiguration,
 } from "@/components/cards/parameter";
+import {
+  ParameterTableCard,
+  ParameterTableCardConfiguration,
+} from "@/components/cards/parameter-table";
 import { TextCard, TextCardConfiguration } from "@/components/cards/text";
 
 // Match cards with their schemas
@@ -17,6 +21,7 @@ export const cardSchemaMap = {
   TextCard: TextCardConfiguration, // <-- Effect schema
   MqttDebugCard: MqttDebugCardConfiguration,
   ParameterCard: ParameterCardConfiguration,
+  ParameterTableCard: ParameterTableCardConfiguration,
   CommandHistoryCard: CommandHistoryCardConfiguration,
 };
 type CardSchemaMap = typeof cardSchemaMap;
@@ -30,5 +35,6 @@ export const cardComponentMap = {
   TextCard: TextCard,
   MqttDebugCard: MqttDebugCard,
   ParameterCard: ParameterCard,
+  ParameterTableCard: ParameterTableCard,
   CommandHistoryCard: CommandHistoryCard,
 };
