@@ -25,7 +25,7 @@ export function TextCard(
     <div className="h-full w-full overflow-scroll p-2">
       {/* <div className="bg-neutral-background text-neutral border px-2"> */}
       {Result.match(result, {
-        onInitial: () => <div>Loading...</div>,
+        onInitial: () => <div>Loading....</div>,
         onFailure: (fail) => (
           <pre className="whitespace-pre-wrap">{Cause.pretty(fail.cause)}</pre>
         ),

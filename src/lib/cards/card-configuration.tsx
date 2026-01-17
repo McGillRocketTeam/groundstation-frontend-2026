@@ -1,3 +1,7 @@
+import {
+  MqttDebugCard,
+  MqttDebugCardConfiguration,
+} from "@/components/cards/debug";
 import { LinksCard, LinksCardConfiguration } from "@/components/cards/links";
 import { TextCard, TextCardConfiguration } from "@/components/cards/text";
 
@@ -5,6 +9,7 @@ import { TextCard, TextCardConfiguration } from "@/components/cards/text";
 export const cardSchemaMap = {
   TextCard: TextCardConfiguration,
   LinksCard: LinksCardConfiguration, // <-- Effect schema
+  MqttDebugCard: MqttDebugCardConfiguration,
 };
 type CardSchemaMap = typeof cardSchemaMap;
 type CardSchemaValues = CardSchemaMap[keyof CardSchemaMap];
@@ -16,4 +21,5 @@ export type CardConfigurationUnion = CardSchemaValues["Type"];
 export const cardComponentMap = {
   TextCard: TextCard,
   LinksCard: LinksCard,
+  MqttDebugCard: MqttDebugCard,
 };
