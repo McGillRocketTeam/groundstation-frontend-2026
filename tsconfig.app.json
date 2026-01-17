@@ -25,7 +25,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@simulator/*": ["./simulator/*"]
     },
     "plugins": [
       {
@@ -33,5 +34,5 @@
       }
     ]
   },
-  "include": ["src"]
+  "include": ["src", "simulator"]
 }
