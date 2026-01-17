@@ -1,12 +1,12 @@
 import { YamcsApi } from "@/lib/yamcs/client/http";
-import { NamedObjectId, Value } from "@/lib/yamcs/client/types";
+import { NamedObjectId, ParameterInfo, Value } from "@/lib/yamcs/client/types";
 import { HttpApiClient } from "@effect/platform";
 import {
   NodeContext,
   NodeHttpClient,
   NodeRuntime,
 } from "@effect/platform-node";
-import { Effect, Layer, Schema } from "effect";
+import { Effect, Layer, Schedule, Schema } from "effect";
 
 /*
 	 {
@@ -31,6 +31,28 @@ import { Effect, Layer, Schema } from "effect";
 		}
 */
 
+class Random extends Effect.Service<Random>()("Random", {
+  accessors: true,
+  effect: Effect.gen(function* () {
+    let date = new Date();
+
+    const next = Effect.gen(function* () {
+      yield* Effect.logWarning("Starting Random");
+      date = new Date();
+    });
+
+    const generateValue: (
+      mdb: typeof ParameterInfo.Type,
+    ) => Effect.Effect<typeof Value.Type> = (mdb) =>
+      Effect.gen(function* () {
+        yield* Effect.log("Random");
+        return { type: "FLOAT", value: 0 };
+      });
+
+    return { generateValue, next };
+  }),
+}) {}
+
 class ParameterValueSchema extends Schema.Class<ParameterValueSchema>(
   "ParameterValueSchema",
 )({
@@ -38,7 +60,16 @@ class ParameterValueSchema extends Schema.Class<ParameterValueSchema>(
   generationTime: Schema.Date,
   engValue: Value,
 }) {
-  static fromMDB = Effect.gen(function* () {});
+  static fromMdb = (mdb: typeof ParameterInfo.Type) =>
+    Effect.gen(function* () {
+      const value = yield* Random.generateValue(mdb);
+
+      return ParameterValueSchema.make({
+        id: { name: mdb.qualifiedName },
+        generationTime: new Date(),
+        engValue: value,
+      });
+    });
 }
 
 const simulator = Effect.gen(function* () {
@@ -50,14 +81,24 @@ const simulator = Effect.gen(function* () {
     path: { instance: "ground_station" },
     urlParams: {},
   });
+
+  yield* Random.next;
+  const payload = yield* Effect.forEach(parameters, (parameter) =>
+    ParameterValueSchema.fromMdb(parameter),
+  );
 }).pipe(
   Effect.catchTag("RequestError", () =>
     Effect.logError(
       "Unable to request data from YAMCS. Are you running the backend on port 8090?",
     ),
   ),
+  Effect.repeat(Schedule.spaced("10 seconds")),
 );
 
-const simulatorLayer = Layer.mergeAll(NodeContext.layer, NodeHttpClient.layer);
+const simulatorLayer = Layer.mergeAll(
+  NodeContext.layer,
+  NodeHttpClient.layer,
+  Random.Default,
+);
 
 NodeRuntime.runMain(simulator.pipe(Effect.provide(simulatorLayer)));
