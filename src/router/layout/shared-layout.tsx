@@ -1,14 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { connectionStatusAtom } from "@/lib/atoms/connection-status";
-import { yamcsWebsocketAtom } from "@/lib/atoms/yamcs";
 import { useAtomValue } from "@effect-atom/atom-react";
 import { Outlet } from "react-router";
 
 export function SharedLayout() {
-  useAtomValue(yamcsWebsocketAtom);
+  // useAtomValue(yamcsWebsocketAtom);
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-row items-center justify-between border-b p-3">
+      <header className="bg-background sticky top-0 flex flex-row items-center justify-between border-b p-3">
         <div>
           <div className="text-mrt-red text-sm uppercase">
             McGill Rocket Team
@@ -17,7 +16,7 @@ export function SharedLayout() {
         </div>
 
         <ConnectionStatus />
-      </div>
+      </header>
       <div className="flex-1">
         <Outlet />
       </div>

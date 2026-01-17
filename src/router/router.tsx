@@ -9,6 +9,7 @@ import { RootErrorBoundary } from "./pages/error";
 import { SettingsPage } from "./pages/settings";
 
 import defaultLayout from "@/../public/default-layout.json";
+import { StackPage } from "./pages/stack";
 
 export const getDashboardList = Effect.gen(function* () {
   const kv = yield* KeyValueStore.KeyValueStore;
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
         errorElement: <RootErrorBoundary />,
         element: <DashboardPage slug={dashboard.slug} />,
       })),
+      {
+        path: "/stack",
+        element: <StackPage />,
+      },
       {
         path: "/settings",
         element: <SettingsPage />,
