@@ -242,7 +242,7 @@ export const parameterSubscriptionAtom = Atom.family(
 
           const { call, stream } = yield* ws.subscribe(
             SubscribeParameterRequest.make({
-              instance: "mqtt-frames",
+              instance: "mqtt-packets",
               processor: "realtime",
               id: [{ name: qualifiedName }],
             }),

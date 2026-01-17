@@ -1,5 +1,12 @@
-export function Gauge ({minNumber, maxNumber, value}: {minNumber: number, maxNumber: number, value: number}) {
+import {useAtomSuspense} from "@effect-atom/atom-react";
+import {parameterSubscriptionAtom} from "@/lib/yamcs/client/websocket/client.ts";
+
+export function Gauge ({minNumber, maxNumber}: {minNumber: number, maxNumber: number}) {
     const inbetween = Math.round((maxNumber - minNumber)/6);
+
+    const { engValue } = useAtomSuspense(parameterSubscriptionAtom("/myproject/Battery1_Voltage")).value
+    const tempValue = "value" in engValue ? engValue.value : null;
+    const value = typeof tempValue === "number" ? tempValue : 0;
 
     const clamp = (x: number, a: number, b: number) => Math.min(b, Math.max(a, x));
     const START_ANGLE = -135; // min value position
