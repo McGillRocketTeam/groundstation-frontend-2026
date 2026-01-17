@@ -1,9 +1,27 @@
+import {
+  CommandHistoryCard,
+  CommandHistoryCardConfiguration,
+} from "@/components/cards/commandHistory";
+import {
+  MqttDebugCard,
+  MqttDebugCardConfiguration,
+} from "@/components/cards/debug";
+import {
+  GaugeCard,
+  GaugecardConfiguration,
+} from "@/components/cards/gauge-card";
+import {
+  ParameterCard,
+  ParameterCardConfiguration,
+} from "@/components/cards/parameter";
 import { TextCard, TextCardConfiguration } from "@/components/cards/text";
-import { GaugeCard, GaugecardConfiguration } from "@/components/cards/gauge-card";
 // Match cards with their schemas
 export const cardSchemaMap = {
-  TextCard: TextCardConfiguration,
-  GaugeCard: GaugecardConfiguration,// <-- Effect schema
+  GaugeCard: GaugecardConfiguration, // <-- Effect schema
+  TextCard: TextCardConfiguration, // <-- Effect schema
+  ParameterCard: ParameterCardConfiguration,
+  CommandHistoryCard: CommandHistoryCardConfiguration,
+  MqttDebugCard: MqttDebugCardConfiguration,
 };
 type CardSchemaMap = typeof cardSchemaMap;
 type CardSchemaValues = CardSchemaMap[keyof CardSchemaMap];
@@ -15,4 +33,7 @@ export type CardConfigurationUnion = CardSchemaValues["Type"];
 export const cardComponentMap = {
   TextCard: TextCard,
   GaugeCard: GaugeCard,
+  ParameterCard: ParameterCard,
+  CommandHistoryCard: CommandHistoryCard,
+  MqttDebugCard: MqttDebugCard,
 };
