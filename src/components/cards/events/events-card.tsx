@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-table";
 import { Suspense, useState } from "react";
 import { Event } from "@/lib/yamcs/client/types";
+import { ColumnSelector } from "./column-selector.tsx";
 import { useAtomSuspense } from "@effect-atom/atom-react";
 import { eventsSubscriptionAtom } from "@/lib/yamcs/client/websocket/client";
 
@@ -47,18 +48,6 @@ type YamcsEvent = typeof Event.Type
 
 export function EventsCardBody() {
   const events = useAtomSuspense(eventsSubscriptionAtom).value
-
-  // getting initial events from yamcs backend
-  // useEffect(() => {
-  //   fetch("http://localhost:8090/api/archive/mqtt-frames/events?limit=50")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       console.log(data.events);
-  //       setEvents(data.events);
-  //     })
-  //     .catch((error) => console.error("Error fetching initial events", error));
-  // }, []);
-
 
   // function that returns whether the row should be displayed based on time
   const generationTimeFilter: FilterFn<typeof Event.Type> = (
@@ -235,11 +224,36 @@ export function EventsCardBody() {
     );
   }
 
+  const formatDate = (value: string) => {
+    const date = new Date(value);
+
+    return date.toLocaleString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+      timeZoneName: "short",
+    });
+  };
+
+  const [messageSearch, setMessageSearch] = useState("");
+
   // CellContext<RowType, CellValueType>. Called with cell.getContext()
   const getCellValue = (props: CellContext<YamcsEvent, string>) => props.getValue().toString();
 
   const [columnFilters, setColumnFilters] =
     useState<ColumnFiltersState>([]);
+
+  const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({
+    generationTime: true,
+    message: true,
+    severity: true,
+    source: true,
+    receptionTime: false
+  });
 
   const columns: ColumnDef<YamcsEvent, string>[] = [
     {
@@ -250,25 +264,67 @@ export function EventsCardBody() {
         const colorClass = severityColors[value] || "text-black";
         return <span className={colorClass}>{value}</span>;
       },
-      filterFn: severityFilter
+      filterFn: severityFilter,
+      meta: {
+        label: "Severity",
+      },
     },
     {
       accessorKey: "generationTime",
       header: ({ column }) => (
         <GenerationTimeHeader column={column} />
       ),
-      cell: getCellValue,
+      cell: ({ getValue }) => formatDate(getValue<string>()),
       filterFn: generationTimeFilter,
+      meta: {
+        label: "Generation Time",
+      },
+    },
+    {
+      accessorKey: "receptionTime",
+      header: "Reception Time",
+      cell: ({ getValue }) => formatDate(getValue<string>()),
+      meta: {
+        label: "Reception Time"
+      }
     },
     {
       accessorKey: "message",
       header: "Message",
-      cell: getCellValue,
+      cell: ({ getValue }) => {
+        const text = getValue<string>();
+
+        if (!messageSearch) {
+          return text;
+        }
+
+        const lowerText = text.toLowerCase();
+        const lowerSearch = messageSearch.toLowerCase();
+        const matchIndex = lowerText.indexOf(lowerSearch);
+
+        if (matchIndex === -1) {
+          return text;
+        }
+
+        return (
+          <>
+            {text.slice(0, matchIndex)}
+            <strong>{text.slice(matchIndex, matchIndex + messageSearch.length)}</strong>
+            {text.slice(matchIndex + messageSearch.length)}
+          </>
+        );
+      },
+      meta: {
+        label: "Message",
+      },
     },
     {
       accessorKey: "source",
       header: "Source",
       cell: getCellValue,
+      meta: {
+        label: "Source",
+      },
     },
   ];
 
@@ -276,19 +332,38 @@ export function EventsCardBody() {
   const eventsTable = useReactTable<YamcsEvent>({
     data: events.reverse(),
     columns,
-    state: { columnFilters },
+    state: { columnFilters, columnVisibility },
     onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
   });
 
-  // for debugging
-  //console.log(events);
-  console.log(eventsTable.getRowModel().rows);
-  //console.log(eventsTable.getRowModel().rows[0]?.getVisibleCells());
-
   return (
     <div className="h-[500px] overflow-y-auto px-2 py-2 pb-8">
+      <div className="mb-2 flex items-center gap-2">
+        {/* Search bar */}
+        <input
+          type="text"
+          placeholder="Search by message..."
+          value={messageSearch}
+          onChange={(e) => {
+            const value = e.target.value;
+            setMessageSearch(value);
+
+            eventsTable
+              .getColumn("message")
+              ?.setFilterValue(value);
+          }}
+          className="w-[93.5%] rounded border px-2 py-1 text-xs"
+        />
+
+        {/* Column Selector */}
+        <div>
+          <ColumnSelector table={eventsTable} />
+        </div>
+      </div>
+
       <table className="w-full table-fixed border border-gray-500 text-xs">
         <thead className="bg-gray-200 text-left">
           {/* Note: There is only one header group right now with 4 headers */}
