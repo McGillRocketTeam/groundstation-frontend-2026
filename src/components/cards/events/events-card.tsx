@@ -1,59 +1,67 @@
-import type { Column, ColumnDef, CellContext, ColumnFiltersState, FilterFn } from "@tanstack/react-table";
+import { Event } from "@/lib/yamcs/client/types";
+import { eventsSubscriptionAtom } from "@/lib/yamcs/client/websocket/client";
+import { useAtomSuspense } from "@effect-atom/atom-react";
+import type {
+  CellContext,
+  Column,
+  ColumnDef,
+  ColumnFiltersState,
+  FilterFn,
+} from "@tanstack/react-table";
 import {
   flexRender,
   getCoreRowModel,
+  getFilteredRowModel,
   useReactTable,
-  getFilteredRowModel
 } from "@tanstack/react-table";
 import { Suspense, useState } from "react";
-import { Event } from "@/lib/yamcs/client/types";
 import { ColumnSelector } from "./column-selector.tsx";
-import { useAtomSuspense } from "@effect-atom/atom-react";
-import { eventsSubscriptionAtom } from "@/lib/yamcs/client/websocket/client";
 
-  // for sorting table based on generationTime and receptionTime
-  type TimeFilter =
+// for sorting table based on generationTime and receptionTime
+type TimeFilter =
   | { type: "lastHour" }
   | { type: "last6Hours" }
   | { type: "last24Hours" }
   | { type: "noLimit" }
   | { type: "custom"; from: Date; to: Date };
 
-  // for sorting table based on severity level
-  type SeverityFilter =
+// for sorting table based on severity level
+type SeverityFilter =
   | { type: "Info" }
   | { type: "Watch" }
   | { type: "Warning" }
   | { type: "Distress" }
   | { type: "Critical" }
-  | { type: "Severe" }
+  | { type: "Severe" };
 
-  // map of severity levels to corresponding colors
-  const severityColors: Record<string, string> = {
-    INFO: "text-yellow-600",
-    WATCH: "text-[#ff9933]",
-    WARNING: "text-[#ff6600]",
-    DISTRESS: "text-[#990000]",
-    CRITICAL: "text-[#cc0000]",
-    SEVERE: "text-[#cc0000] font-bold",
-  };
+// map of severity levels to corresponding colors
+const severityColors: Record<string, string> = {
+  INFO: "text-yellow-600",
+  WATCH: "text-[#ff9933]",
+  WARNING: "text-[#ff6600]",
+  DISTRESS: "text-[#990000]",
+  CRITICAL: "text-[#cc0000]",
+  SEVERE: "text-[#cc0000] font-bold",
+};
 
 export function EventsCard() {
-  return <Suspense fallback={<div>Loading...</div>}>
-    <EventsCardBody />
-  </Suspense>
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EventsCardBody />
+    </Suspense>
+  );
 }
 
-type YamcsEvent = typeof Event.Type
+type YamcsEvent = typeof Event.Type;
 
 export function EventsCardBody() {
-  const events = useAtomSuspense(eventsSubscriptionAtom).value
+  const events = useAtomSuspense(eventsSubscriptionAtom).value;
 
   // function that returns whether the row should be displayed based on time
   const generationTimeFilter: FilterFn<typeof Event.Type> = (
     row,
     columnId,
-    filterValue: TimeFilter
+    filterValue: TimeFilter,
   ) => {
     if (!filterValue || filterValue.type === "noLimit") return true;
 
@@ -90,18 +98,27 @@ export function EventsCardBody() {
   const severityFilter: FilterFn<YamcsEvent> = (
     row,
     columnId,
-    filterValue: SeverityFilter
+    filterValue: SeverityFilter,
   ) => {
     if (!filterValue || filterValue.type === "Info") return true;
 
-    return filterValue.type.toUpperCase() === row.getValue<string>(columnId).toUpperCase();
-
+    return (
+      filterValue.type.toUpperCase() ===
+      row.getValue<string>(columnId).toUpperCase()
+    );
   };
 
-  function SeverityHeader({ column } : { column: Column<YamcsEvent, string> }) {
+  function SeverityHeader({ column }: { column: Column<YamcsEvent, string> }) {
     const [open, setOpen] = useState(false);
 
-    const severityLevels = ["Info", "Watch", "Warning", "Distress", "Critical", "Severe"];
+    const severityLevels = [
+      "Info",
+      "Watch",
+      "Warning",
+      "Distress",
+      "Critical",
+      "Severe",
+    ];
 
     return (
       <div className="relative">
@@ -118,9 +135,7 @@ export function EventsCardBody() {
               {severityLevels.map((level) => (
                 <button
                   key={level}
-                  onClick={() =>
-                    column.setFilterValue({ type: level })
-                  }
+                  onClick={() => column.setFilterValue({ type: level })}
                 >
                   {level}
                 </button>
@@ -132,7 +147,11 @@ export function EventsCardBody() {
     );
   }
 
-  function GenerationTimeHeader({ column }: { column: Column<YamcsEvent, string> }) {
+  function GenerationTimeHeader({
+    column,
+  }: {
+    column: Column<YamcsEvent, string>;
+  }) {
     // whether the popup is open
     const [open, setOpen] = useState(false);
 
@@ -142,7 +161,9 @@ export function EventsCardBody() {
     const [to, setTo] = useState(initialDateState);
 
     const buildDate = ({ date, hour, minute, second }: typeof from) =>
-      new Date(`${date}T${hour.padStart(2, "0")}:${minute.padStart(2, "0")}:${second.padStart(2, "0")}`);
+      new Date(
+        `${date}T${hour.padStart(2, "0")}:${minute.padStart(2, "0")}:${second.padStart(2, "0")}`,
+      );
 
     const timeFilters = [
       { label: "Last hour", type: "lastHour" },
@@ -159,7 +180,9 @@ export function EventsCardBody() {
         <input
           type="date"
           value={state.date}
-          onChange={(curInput) => setState({ ...state, date: curInput.target.value })}
+          onChange={(curInput) =>
+            setState({ ...state, date: curInput.target.value })
+          }
           className="border px-1 text-xs"
         />
         {timeFields.map((field) => (
@@ -170,7 +193,9 @@ export function EventsCardBody() {
             min="0"
             max={field === "hour" ? 23 : 59}
             value={state[field]}
-            onChange={(curInput) => setState({ ...state, [field]: curInput.target.value })}
+            onChange={(curInput) =>
+              setState({ ...state, [field]: curInput.target.value })
+            }
             className="w-12 border px-1 text-xs"
           />
         ))}
@@ -242,17 +267,19 @@ export function EventsCardBody() {
   const [messageSearch, setMessageSearch] = useState("");
 
   // CellContext<RowType, CellValueType>. Called with cell.getContext()
-  const getCellValue = (props: CellContext<YamcsEvent, string>) => props.getValue().toString();
+  const getCellValue = (props: CellContext<YamcsEvent, string>) =>
+    props.getValue().toString();
 
-  const [columnFilters, setColumnFilters] =
-    useState<ColumnFiltersState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const [columnVisibility, setColumnVisibility] = useState<Record<string, boolean>>({
+  const [columnVisibility, setColumnVisibility] = useState<
+    Record<string, boolean>
+  >({
     generationTime: true,
     message: true,
     severity: true,
     source: true,
-    receptionTime: false
+    receptionTime: false,
   });
 
   const columns: ColumnDef<YamcsEvent, string>[] = [
@@ -271,9 +298,7 @@ export function EventsCardBody() {
     },
     {
       accessorKey: "generationTime",
-      header: ({ column }) => (
-        <GenerationTimeHeader column={column} />
-      ),
+      header: ({ column }) => <GenerationTimeHeader column={column} />,
       cell: ({ getValue }) => formatDate(getValue<string>()),
       filterFn: generationTimeFilter,
       meta: {
@@ -285,8 +310,8 @@ export function EventsCardBody() {
       header: "Reception Time",
       cell: ({ getValue }) => formatDate(getValue<string>()),
       meta: {
-        label: "Reception Time"
-      }
+        label: "Reception Time",
+      },
     },
     {
       accessorKey: "message",
@@ -309,7 +334,9 @@ export function EventsCardBody() {
         return (
           <>
             {text.slice(0, matchIndex)}
-            <strong>{text.slice(matchIndex, matchIndex + messageSearch.length)}</strong>
+            <strong>
+              {text.slice(matchIndex, matchIndex + messageSearch.length)}
+            </strong>
             {text.slice(matchIndex + messageSearch.length)}
           </>
         );
@@ -351,9 +378,7 @@ export function EventsCardBody() {
             const value = e.target.value;
             setMessageSearch(value);
 
-            eventsTable
-              .getColumn("message")
-              ?.setFilterValue(value);
+            eventsTable.getColumn("message")?.setFilterValue(value);
           }}
           className="w-[93.5%] rounded border px-2 py-1 text-xs"
         />

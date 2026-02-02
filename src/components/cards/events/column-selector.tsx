@@ -17,26 +17,27 @@ export function ColumnSelector({ table }: { table: any }) {
 
       {open && (
         <div className="absolute right-0 z-10 mt-1 w-48 rounded border bg-white p-2 shadow">
-          {table.getAllLeafColumns()
-                .filter((column: any) => !requiredColumns.includes(column.id))
-                .map((column: any) => {
-            const isRequired = requiredColumns.includes(column.id);
+          {table
+            .getAllLeafColumns()
+            .filter((column: any) => !requiredColumns.includes(column.id))
+            .map((column: any) => {
+              const isRequired = requiredColumns.includes(column.id);
 
-            return (
-              <label
-                key={column.id}
-                className="flex items-center gap-2 text-xs"
-              >
-                <input
-                  type="checkbox"
-                  checked={column.getIsVisible()}
-                  disabled={isRequired}
-                  onChange={column.getToggleVisibilityHandler()}
-                />
-                {column.columnDef.meta.label}
-              </label>
-            );
-          })}
+              return (
+                <label
+                  key={column.id}
+                  className="flex items-center gap-2 text-xs"
+                >
+                  <input
+                    type="checkbox"
+                    checked={column.getIsVisible()}
+                    disabled={isRequired}
+                    onChange={column.getToggleVisibilityHandler()}
+                  />
+                  {column.columnDef.meta.label}
+                </label>
+              );
+            })}
         </div>
       )}
     </div>
